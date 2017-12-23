@@ -22,31 +22,36 @@ var view = {
     canvas.width = 400;
     canvas.height = 400;
   },
-  drawTile: function(pos, map) {
+  drawTile: function(pos, map, i, j) {
 
     ctx.fillStyle = '#48d1cc';
     ctx.fillRect(pos.x + 5, pos.y + 5, this.tile.width - 10, this.tile.height - 10);
     ctx.fillStyle = '#ffffff';
     ctx.font = "20px Verdana";
-    ctx.fillText(map[i][j], pos.textx , pos.texty);
+    if (map[i][j] >= 10) {
+      ctx.fillText(map[i][j], pos.textx - 6 , pos.texty);
+    }
+    else {
+      ctx.fillText(map[i][j], pos.textx, pos.texty);
+    }
 
   },
   buildBoard: function() {
-    var map = board.tiles;
-    var tileMap = board.tileMap;
-    var pos = {
+    let map = board.tiles;
+    let tileMap = board.tileMap;
+    let pos = {
       x: 0,
       y: 0,
       textx: 45,
       texty: 55
     }
 
-    for (i = 0; i < map.length; i++) {
+    for (let i = 0; i < map.length; i++) {
 
       tileMap[i] = [];
 
-      for (j = 0; j < map[i].length; j++) {
-        var currentTile = {
+      for (let j = 0; j < map[i].length; j++) {
+        let currentTile = {
           tileName: map[i][j],
           x: pos.x,
           y: pos.y,
@@ -54,7 +59,7 @@ var view = {
         };
 
         if (map[i][j] !== 0) {
-          this.drawTile(pos, map);
+          this.drawTile(pos, map, i, j);
           tileMap[i].push(currentTile);
         }
         else {
