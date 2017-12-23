@@ -21,6 +21,8 @@ var view = {
   init: function() {
     canvas.width = 400;
     canvas.height = 400;
+    ctx.fillStyle = '#00000';
+    ctx.fillRect(0, 0, 400, 400);
   },
   drawTile: function(pos, map, i, j) {
 
