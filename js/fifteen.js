@@ -12,10 +12,11 @@ var board = {
     let tileMap = this.tileMap;
     let tile = view.tile;
 
-    for (let i = 0; i < tileMap.length; i++) {
-      for (let j = 0; j < tileMap[i].length; j++) {
-        if (y > tileMap[i][j].y && y < tileMap[i][j].y + tileLength &&
-          x > tileMap[i][j].x && x < tileMap[i][j].x + tileLength) {
+    for (let i = 0; i < dimension; i++) {
+      for (let j = 0; j < dimension; j++) {
+        if (y >= tileMap[i][j].y && y <= tileMap[i][j].y + tileLength &&
+          x >= tileMap[i][j].x && x <= tileMap[i][j].x + tileLength) {
+            console.log(tileMap[i][j]);
             return tileMap[i][j];
         }
       }
@@ -24,8 +25,8 @@ var board = {
   getZero: function() {
     let tileMap = this.tileMap;
 
-    for (let i = 0; i < tileMap.length; i++) {
-      for (let j = 0; j < tileMap[i].length; j++) {
+    for (let i = 0; i < dimension; i++) {
+      for (let j = 0; j < dimension; j++) {
         if (tileMap[i][j].tileName === 0) {
           return tileMap[i][j];
         }
@@ -50,18 +51,19 @@ var board = {
     tileMap[tileRow][tileCol] = temp;
   },
   moveTile: function(event) {
-    let x = util.getPosition(event).x;
-    let y = util.getPosition(event).y;
+    let position = util.getPosition(event);
+    let x = position.x;
+    let y = position.y;
     let currentTile = board.getTile(x, y);
     let zeroTile = board.getZero();
 
     if (board.canMove(currentTile, zeroTile)) {
       board.switchTile(currentTile, zeroTile);
       board.incrementMoveCount();
+      view.clearBoard();
+      view.buildBoard();
+      console.log(board.won());
     }
-    view.clearBoard();
-    view.buildBoard();
-    console.log(board.won());
   },
   canMove: function(currentTile, zeroTile) {
     let zeroRow = zeroTile.row;
