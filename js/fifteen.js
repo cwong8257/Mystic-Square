@@ -124,11 +124,11 @@ var handlers = {
 
 var view = {
   init: function() {
-    canvas.width = 400;
-    canvas.height = 400;
     tileLength = 100;
+    canvas.width = dimension * tileLength;
+    canvas.height = dimension * tileLength;
     ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, 400, 400);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   },
   drawTile: function(pos, map, i, j) {
     ctx.fillStyle = '#48d1cc';
@@ -148,8 +148,8 @@ var view = {
     let pos = {
       x: 0,
       y: 0,
-      textx: 45,
-      texty: 55
+      textx: (tileLength / 2) - 5,
+      texty: (tileLength / 2) + 5
     }
 
     for (let i = 0; i < map.length; i++) {
@@ -167,22 +167,22 @@ var view = {
           this.drawTile(pos, map, i, j);
         }
         tileMap[i].push(currentTile);
-        pos.x += 100;
-        pos.textx += 100;
+        pos.x += tileLength;
+        pos.textx += tileLength;
       }
       pos.x = 0;
-      pos.y += 100;
-      pos.textx = 45;
-      pos.texty += 100; 
+      pos.y += tileLength;
+      pos.textx = (tileLength / 2) - 5;
+      pos.texty += tileLength; 
     }
   },
   setUpEventListeners: function() {
     canvas.addEventListener("mousedown", board.moveTile);
   },
   clearBoard: function(){
-    ctx.clearRect(0, 0, 400, 400);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, 400, 400);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 };
 
