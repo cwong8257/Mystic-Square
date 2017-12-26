@@ -9,23 +9,74 @@ var board = {
     [13,14,15,0]
   ],
   tileMap: [],
-  moveTile: function(event) {
-    let x = util.getPosition(event).x;
-    let y = util.getPosition(event).y;
-
-    board.getTile(x, y);
-  },
   getTile: function(x, y) {
     let tileMap = this.tileMap;
     let tile = view.tile;
 
     for (let i = 0; i < tileMap.length; i++) {
       for ( let j = 0; j < tileMap[i].length; j++) {
-        if(y > tileMap[i][j].y && y < tileMap[i][j].y + tile.height &&
+        if (y > tileMap[i][j].y && y < tileMap[i][j].y + tile.height &&
           x > tileMap[i][j].x && x < tileMap[i][j].x + tile.width) {
-            console.log(tileMap[i][j].tileName, tileMap[i][j].tileIndex);
+            return tileMap[i][j];
         }
       }
+    }
+  },
+  getZero: function() {
+    let tileMap = this.tileMap;
+
+    for (let i = 0; i < tileMap.length; i++)
+    {
+      for (let j = 0; j < tileMap[i].length; j++)
+      {
+        if (tileMap[i][j].tileName === 0)
+        {
+          return tileMap[i][j];
+        }
+      }
+    }
+  },
+  switchTile: function(currentTile, zeroTile) {
+    let zeroRow = zeroTile.row;
+    let zeroCol = zeroTile.col;
+    let tileRow = currentTile.row;
+    let tileCol = currentTile.col;
+    let tiles = this.tiles;
+    let tileMap = this.tileMap;
+    let plHolder;
+    
+    plHolder = tiles[zeroRow][zeroCol];
+    tiles[zeroRow][zeroCol] = tiles[tileRow][tileCol];
+    tiles[tileRow][tileCol] = plHolder;
+
+    plHolder = tileMap[zeroRow][zeroCol];
+    tileMap[zeroRow][zeroCol] = tileMap[tileRow][tileCol];
+    tileMap[tileRow][tileCol] = plHolder;
+  },
+  moveTile: function(event) {
+    let x = util.getPosition(event).x;
+    let y = util.getPosition(event).y;
+    let currentTile = board.getTile(x, y);
+    let zeroTile = board.getZero();
+
+    if (board.canMove(currentTile, zeroTile)) {
+      board.switchTile(currentTile, zeroTile);
+    }
+    view.clearBoard();
+    view.buildBoard();
+  },
+  canMove: function(currentTile, zeroTile) {
+    let zeroRow = zeroTile.row;
+    let zeroCol = zeroTile.col;
+    let tileRow = currentTile.row;
+    let tileCol = currentTile.col;
+    
+    if ((zeroRow === tileRow && Math.abs(zeroCol - tileCol) === 1) || (Math.abs(zeroRow - tileRow) === 1 && zeroCol === tileCol))
+    {
+        return true;
+    }
+    else {
+        return false;
     }
   }
 };
@@ -42,7 +93,7 @@ var view = {
   init: function() {
     canvas.width = 400;
     canvas.height = 400;
-    ctx.fillStyle = '#00000';
+    ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, 400, 400);
   },
   drawTile: function(pos, map, i, j) {
@@ -75,9 +126,9 @@ var view = {
           tileName: map[i][j],
           x: pos.x,
           y: pos.y,
-          tileIndex: j
+          row: i,
+          col: j
         };
-
         if (map[i][j] !== 0) {
           this.drawTile(pos, map, i, j);
         }
@@ -93,11 +144,16 @@ var view = {
   },
   setUpEventListeners: function() {
     canvas.addEventListener("mousedown", board.moveTile);
+  },
+  clearBoard: function(){
+    ctx.clearRect(0, 0, 400, 400);
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, 400, 400);
   }
 };
 
 var util = {
-  getPosition: function (event) {
+  getPosition: function(event) {
     let rect = canvas.getBoundingClientRect();
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
@@ -106,10 +162,7 @@ var util = {
       x: x,
       y: y
     };
-  },
-
-
-    
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
