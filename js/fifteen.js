@@ -16,7 +16,7 @@ var board = {
     let tile = view.tile;
 
     for (let i = 0; i < tileMap.length; i++) {
-      for ( let j = 0; j < tileMap[i].length; j++) {
+      for (let j = 0; j < tileMap[i].length; j++) {
         if (y > tileMap[i][j].y && y < tileMap[i][j].y + TILE_LENGTH &&
           x > tileMap[i][j].x && x < tileMap[i][j].x + TILE_LENGTH) {
             return tileMap[i][j];
@@ -27,12 +27,9 @@ var board = {
   getZero: function() {
     let tileMap = this.tileMap;
 
-    for (let i = 0; i < tileMap.length; i++)
-    {
-      for (let j = 0; j < tileMap[i].length; j++)
-      {
-        if (tileMap[i][j].tileName === 0)
-        {
+    for (let i = 0; i < tileMap.length; i++) {
+      for (let j = 0; j < tileMap[i].length; j++) {
+        if (tileMap[i][j].tileName === 0) {
           return tileMap[i][j];
         }
       }
@@ -73,8 +70,7 @@ var board = {
     let tileRow = currentTile.row;
     let tileCol = currentTile.col;
     
-    if ((zeroRow === tileRow && Math.abs(zeroCol - tileCol) === 1) || (Math.abs(zeroRow - tileRow) === 1 && zeroCol === tileCol))
-    {
+    if ((zeroRow === tileRow && Math.abs(zeroCol - tileCol) === 1) || (Math.abs(zeroRow - tileRow) === 1 && zeroCol === tileCol)) {
         return true;
     }
     else {
