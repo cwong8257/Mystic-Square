@@ -1,5 +1,6 @@
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
+const moveCount = document.getElementById("moveCount");
 const STARTING_DIMENSION = 4;
 var dimension;
 var tileLength;
@@ -56,6 +57,7 @@ var board = {
 
     if (board.canMove(currentTile, zeroTile)) {
       board.switchTile(currentTile, zeroTile);
+      board.incrementMoveCount();
     }
     view.clearBoard();
     view.buildBoard();
@@ -68,11 +70,11 @@ var board = {
     let tileCol = currentTile.col;
     
     if ((zeroRow === tileRow && Math.abs(zeroCol - tileCol) === 1) ||
-      (Math.abs(zeroRow - tileRow) === 1 && zeroCol === tileCol)) {
-        return true;
+    (Math.abs(zeroRow - tileRow) === 1 && zeroCol === tileCol)) {
+      return true;
     }
     else {
-        return false;
+      return false;
     }
   },
   won: function() {
@@ -97,7 +99,7 @@ var board = {
     }
     return true;
   },
-  init(dim) {
+  init: function(dim) {
     dimension = dim;
     let tiles = this.tiles;
 
@@ -115,6 +117,9 @@ var board = {
       tiles[dimension - 1][dimension - 2] = tiles[dimension - 1][dimension - 3];
       tiles[dimension - 1][dimension - 3] = temp;
     }
+  },
+  incrementMoveCount: function() {
+    moveCount.innerText = Number(moveCount.innerHTML) + 1;
   }
 };
 
@@ -132,7 +137,7 @@ var view = {
   },
   drawTile: function(pos, map, i, j) {
     ctx.fillStyle = '#48d1cc';
-    ctx.fillRect(pos.x + 5, pos.y + 5, tileLength - 10, tileLength - 10);
+    ctx.fillRect(pos.x + 5, pos.y + 5, tileLength * 0.9, tileLength * 0.9);
     ctx.fillStyle = '#ffffff';
     ctx.font = "20px Verdana";
     if (map[i][j] >= 10) {
