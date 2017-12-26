@@ -7,8 +7,8 @@ var board = {
   tiles: [
     [1,2,3,4],
     [5,6,7,8],
-    [9,10,11,12],
-    [13,14,15,0]
+    [9,10,12,15],
+    [13,14,11,0]
   ],
   tileMap: [],
   getTile: function(x, y) {
@@ -63,6 +63,7 @@ var board = {
     }
     view.clearBoard();
     view.buildBoard();
+    console.log(board.won());
   },
   canMove: function(currentTile, zeroTile) {
     let zeroRow = zeroTile.row;
@@ -70,12 +71,35 @@ var board = {
     let tileRow = currentTile.row;
     let tileCol = currentTile.col;
     
-    if ((zeroRow === tileRow && Math.abs(zeroCol - tileCol) === 1) || (Math.abs(zeroRow - tileRow) === 1 && zeroCol === tileCol)) {
+    if ((zeroRow === tileRow && Math.abs(zeroCol - tileCol) === 1) ||
+      (Math.abs(zeroRow - tileRow) === 1 && zeroCol === tileCol)) {
         return true;
     }
     else {
         return false;
     }
+  },
+  won: function() {
+    let check = [];
+
+    for (var i = 0; i < DIMENSION; i++) {
+      check[i] = [];
+      for (var j = 0; j < DIMENSION; j++) {
+        let num = i * DIMENSION + j + 1;
+        check[i][j] = num;
+      }
+    }
+    
+    check[DIMENSION - 1][DIMENSION - 1] = 0;
+    
+    for (var i = 0; i < DIMENSION; i++) {
+      for (var j = 0; j < DIMENSION; j++) {
+        if (this.tiles[i][j] != check[i][j]) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 };
 
