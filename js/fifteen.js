@@ -1,5 +1,5 @@
-var canvas = document.getElementById("board");
-var ctx = canvas.getContext("2d");
+const canvas = document.getElementById("board");
+const ctx = canvas.getContext("2d");
 const DIMENSION = 4;
 const TILE_LENGTH = 100;
 
