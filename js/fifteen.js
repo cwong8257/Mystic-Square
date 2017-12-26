@@ -1,15 +1,11 @@
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
-const DIMENSION = 4;
-const TILE_LENGTH = 100;
+const STARTING_DIMENSION = 4;
+var dimension;
+var tileLength;
 
 var board = {
-  tiles: [
-    [1,2,3,4],
-    [5,6,7,8],
-    [9,10,12,15],
-    [13,14,11,0]
-  ],
+  tiles: [],
   tileMap: [],
   getTile: function(x, y) {
     let tileMap = this.tileMap;
@@ -17,8 +13,8 @@ var board = {
 
     for (let i = 0; i < tileMap.length; i++) {
       for (let j = 0; j < tileMap[i].length; j++) {
-        if (y > tileMap[i][j].y && y < tileMap[i][j].y + TILE_LENGTH &&
-          x > tileMap[i][j].x && x < tileMap[i][j].x + TILE_LENGTH) {
+        if (y > tileMap[i][j].y && y < tileMap[i][j].y + tileLength &&
+          x > tileMap[i][j].x && x < tileMap[i][j].x + tileLength) {
             return tileMap[i][j];
         }
       }
@@ -82,24 +78,43 @@ var board = {
   won: function() {
     let check = [];
 
-    for (var i = 0; i < DIMENSION; i++) {
+    for (var i = 0; i < dimension; i++) {
       check[i] = [];
-      for (var j = 0; j < DIMENSION; j++) {
-        let num = i * DIMENSION + j + 1;
+      for (var j = 0; j < dimension; j++) {
+        let num = i * dimension + j + 1;
         check[i][j] = num;
       }
     }
     
-    check[DIMENSION - 1][DIMENSION - 1] = 0;
+    check[dimension - 1][dimension - 1] = 0;
     
-    for (var i = 0; i < DIMENSION; i++) {
-      for (var j = 0; j < DIMENSION; j++) {
+    for (var i = 0; i < dimension; i++) {
+      for (var j = 0; j < dimension; j++) {
         if (this.tiles[i][j] != check[i][j]) {
           return false;
         }
       }
     }
     return true;
+  },
+  init(dim) {
+    dimension = dim;
+    let tiles = this.tiles;
+
+    let temp;
+    
+    for (let i = 0; i < dimension; i++) {
+      tiles[i] = [];
+      for (let j = 0; j < dimension; j++) {
+        tiles[i][j] = dimension * dimension - 1 - j - (i * dimension);
+      }                   
+    }
+    
+    if (dimension % 2 == 0) {
+      temp = tiles[dimension - 1][dimension - 2];
+      tiles[dimension - 1][dimension - 2] = tiles[dimension - 1][dimension - 3];
+      tiles[dimension - 1][dimension - 3] = temp;
+    }
   }
 };
 
@@ -111,12 +126,13 @@ var view = {
   init: function() {
     canvas.width = 400;
     canvas.height = 400;
+    tileLength = 100;
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, 400, 400);
   },
   drawTile: function(pos, map, i, j) {
     ctx.fillStyle = '#48d1cc';
-    ctx.fillRect(pos.x + 5, pos.y + 5, TILE_LENGTH - 10, TILE_LENGTH - 10);
+    ctx.fillRect(pos.x + 5, pos.y + 5, tileLength - 10, tileLength - 10);
     ctx.fillStyle = '#ffffff';
     ctx.font = "20px Verdana";
     if (map[i][j] >= 10) {
@@ -184,6 +200,7 @@ var util = {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  board.init(STARTING_DIMENSION);
   view.init();
   view.buildBoard();
   view.setUpEventListeners();
