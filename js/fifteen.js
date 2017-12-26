@@ -5,6 +5,49 @@ const STARTING_DIMENSION = 4;
 var dimension;
 var tileLength;
 
+var app = {
+  moveTile: function(event) {
+    let position = util.getPosition(event);
+    let x = position.x;
+    let y = position.y;
+    let currentTile = board.getTile(x, y);
+    let zeroTile = board.getZero();
+
+    if (board.canMove(currentTile, zeroTile)) {
+      board.switchTile(currentTile, zeroTile);
+      app.incrementMoveCount();
+      view.clearBoard();
+      view.buildBoard();
+      console.log(app.won());
+    }
+  },
+  incrementMoveCount: function() {
+    moveCount.innerText = Number(moveCount.innerHTML) + 1;
+  },
+  won: function() {
+    let check = [];
+
+    for (var i = 0; i < dimension; i++) {
+      check[i] = [];
+      for (var j = 0; j < dimension; j++) {
+        let num = i * dimension + j + 1;
+        check[i][j] = num;
+      }
+    }
+    
+    check[dimension - 1][dimension - 1] = 0;
+    
+    for (var i = 0; i < dimension; i++) {
+      for (var j = 0; j < dimension; j++) {
+        if (board.tiles[i][j] != check[i][j]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+}
+
 var board = {
   tiles: [],
   tileMap: [],
@@ -16,7 +59,6 @@ var board = {
       for (let j = 0; j < dimension; j++) {
         if (y >= tileMap[i][j].y && y <= tileMap[i][j].y + tileLength &&
           x >= tileMap[i][j].x && x <= tileMap[i][j].x + tileLength) {
-            console.log(tileMap[i][j]);
             return tileMap[i][j];
         }
       }
@@ -50,21 +92,6 @@ var board = {
     tileMap[zeroRow][zeroCol] = tileMap[tileRow][tileCol];
     tileMap[tileRow][tileCol] = temp;
   },
-  moveTile: function(event) {
-    let position = util.getPosition(event);
-    let x = position.x;
-    let y = position.y;
-    let currentTile = board.getTile(x, y);
-    let zeroTile = board.getZero();
-
-    if (board.canMove(currentTile, zeroTile)) {
-      board.switchTile(currentTile, zeroTile);
-      board.incrementMoveCount();
-      view.clearBoard();
-      view.buildBoard();
-      console.log(board.won());
-    }
-  },
   canMove: function(currentTile, zeroTile) {
     let zeroRow = zeroTile.row;
     let zeroCol = zeroTile.col;
@@ -78,28 +105,6 @@ var board = {
     else {
       return false;
     }
-  },
-  won: function() {
-    let check = [];
-
-    for (var i = 0; i < dimension; i++) {
-      check[i] = [];
-      for (var j = 0; j < dimension; j++) {
-        let num = i * dimension + j + 1;
-        check[i][j] = num;
-      }
-    }
-    
-    check[dimension - 1][dimension - 1] = 0;
-    
-    for (var i = 0; i < dimension; i++) {
-      for (var j = 0; j < dimension; j++) {
-        if (this.tiles[i][j] != check[i][j]) {
-          return false;
-        }
-      }
-    }
-    return true;
   },
   init: function(dim) {
     dimension = dim;
@@ -119,9 +124,6 @@ var board = {
       tiles[dimension - 1][dimension - 2] = tiles[dimension - 1][dimension - 3];
       tiles[dimension - 1][dimension - 3] = temp;
     }
-  },
-  incrementMoveCount: function() {
-    moveCount.innerText = Number(moveCount.innerHTML) + 1;
   }
 };
 
@@ -184,7 +186,7 @@ var view = {
     }
   },
   setUpEventListeners: function() {
-    canvas.addEventListener("mousedown", board.moveTile);
+    canvas.addEventListener("mousedown", app.moveTile);
   },
   clearBoard: function(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
