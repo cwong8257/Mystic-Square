@@ -1,7 +1,7 @@
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 const moveCount = document.getElementById("moveCount");
-const STARTING_DIMENSION = 4;
+const sizeSelector = document.getElementById("selectSize")
 var dimension;
 var tileLength;
 
@@ -45,6 +45,11 @@ var app = {
       }
     }
     return true;
+  },
+  selectSize: function() {
+    board.init(sizeSelector.value);
+    view.init();
+    view.buildBoard();
   }
 }
 
@@ -209,7 +214,7 @@ var util = {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  board.init(STARTING_DIMENSION);
+  board.init(sizeSelector.value);
   view.init();
   view.buildBoard();
   view.setUpEventListeners();
