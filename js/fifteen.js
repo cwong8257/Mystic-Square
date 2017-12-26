@@ -1,5 +1,7 @@
 var canvas = document.getElementById("board");
 var ctx = canvas.getContext("2d");
+const DIMENSION = 4;
+const TILE_LENGTH = 100;
 
 var board = {
   tiles: [
@@ -15,8 +17,8 @@ var board = {
 
     for (let i = 0; i < tileMap.length; i++) {
       for ( let j = 0; j < tileMap[i].length; j++) {
-        if (y > tileMap[i][j].y && y < tileMap[i][j].y + tile.height &&
-          x > tileMap[i][j].x && x < tileMap[i][j].x + tile.width) {
+        if (y > tileMap[i][j].y && y < tileMap[i][j].y + TILE_LENGTH &&
+          x > tileMap[i][j].x && x < tileMap[i][j].x + TILE_LENGTH) {
             return tileMap[i][j];
         }
       }
@@ -43,15 +45,15 @@ var board = {
     let tileCol = currentTile.col;
     let tiles = this.tiles;
     let tileMap = this.tileMap;
-    let plHolder;
+    let temp;
     
-    plHolder = tiles[zeroRow][zeroCol];
+    temp = tiles[zeroRow][zeroCol];
     tiles[zeroRow][zeroCol] = tiles[tileRow][tileCol];
-    tiles[tileRow][tileCol] = plHolder;
+    tiles[tileRow][tileCol] = temp;
 
-    plHolder = tileMap[zeroRow][zeroCol];
+    temp = tileMap[zeroRow][zeroCol];
     tileMap[zeroRow][zeroCol] = tileMap[tileRow][tileCol];
-    tileMap[tileRow][tileCol] = plHolder;
+    tileMap[tileRow][tileCol] = temp;
   },
   moveTile: function(event) {
     let x = util.getPosition(event).x;
@@ -86,10 +88,6 @@ var handlers = {
 }
 
 var view = {
-  tile: {
-    width: 100,
-    height: 100
-  },
   init: function() {
     canvas.width = 400;
     canvas.height = 400;
@@ -98,7 +96,7 @@ var view = {
   },
   drawTile: function(pos, map, i, j) {
     ctx.fillStyle = '#48d1cc';
-    ctx.fillRect(pos.x + 5, pos.y + 5, this.tile.width - 10, this.tile.height - 10);
+    ctx.fillRect(pos.x + 5, pos.y + 5, TILE_LENGTH - 10, TILE_LENGTH - 10);
     ctx.fillStyle = '#ffffff';
     ctx.font = "20px Verdana";
     if (map[i][j] >= 10) {
