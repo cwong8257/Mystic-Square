@@ -1,7 +1,9 @@
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 const moveCount = document.getElementById("moveCount");
-const sizeSelector = document.getElementById("selectSize")
+const sizeSelector = document.getElementById("selectSize");
+const TILE_OPACITY = 0.7;
+const BOARD_OPACITY = 0.6;
 var dimension;
 var tileLength;
 
@@ -197,10 +199,12 @@ var view = {
     tileLength = 100;
     canvas.width = dimension * tileLength;
     canvas.height = dimension * tileLength;
-    ctx.fillStyle = 'black';
+    ctx.globalAlpha = BOARD_OPACITY;
+    ctx.fillStyle = '#3A3335';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   },
   drawTile: function(pos, map, i, j) {
+    ctx.globalAlpha = TILE_OPACITY;
     ctx.fillStyle = '#48d1cc';
     ctx.fillRect(pos.x + 5, pos.y + 5, tileLength * 0.9, tileLength * 0.9);
     ctx.fillStyle = '#ffffff';
@@ -252,7 +256,8 @@ var view = {
   },
   clearBoard: function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'black';
+    ctx.globalAlpha = BOARD_OPACITY;
+    ctx.fillStyle = '#3A3335';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 };
