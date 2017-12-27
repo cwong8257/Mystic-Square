@@ -3,6 +3,12 @@ body {
   padding: 0;
   height: 100%;
   color: white;
+  background-color: black;
+  background-image: url("../img/background2.jpeg");
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 canvas {
   padding-left: 0;
@@ -19,11 +25,4 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.bg { 
-  background-image: url("../img/background2.jpeg");
-  height: 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
 }
