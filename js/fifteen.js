@@ -206,6 +206,10 @@ var view = {
   drawTile: function(pos, map, i, j) {
     ctx.globalAlpha = TILE_OPACITY;
     ctx.fillStyle = '#48d1cc';
+    ctx.shadowColor = 'black';
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 3;
     ctx.fillRect(pos.x + 5, pos.y + 5, tileLength * 0.9, tileLength * 0.9);
     ctx.fillStyle = '#ffffff';
     ctx.font = "20px Verdana";
@@ -257,6 +261,9 @@ var view = {
   clearBoard: function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.globalAlpha = BOARD_OPACITY;
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
     ctx.fillStyle = '#3A3335';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
