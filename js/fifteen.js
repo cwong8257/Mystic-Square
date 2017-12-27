@@ -6,7 +6,7 @@ var dimension;
 var tileLength;
 
 var app = {
-  moveTile: function(event) {
+  clickMove: function(event) {
     let position = util.getPosition(event);
     let x = position.x;
     let y = position.y;
@@ -20,6 +20,59 @@ var app = {
       view.buildBoard();
       console.log(app.won());
     }
+  },
+  keyMove: function(event) {
+    if (event.defaultPrevented) {
+      return;
+    }
+    let zeroTile = board.getZero();
+    
+
+    switch (event.key) {
+      case "ArrowDown":
+        if (zeroTile.row - 1 >= 0) {
+          let currentTile = board.tileMap[zeroTile.row - 1][zeroTile.col];
+          board.switchTile(currentTile, zeroTile);
+          app.incrementMoveCount();
+          view.clearBoard();
+          view.buildBoard();
+          console.log(app.won());
+        }
+        break;
+      case "ArrowUp":
+        if (zeroTile.row + 1 < dimension) {
+          let currentTile = board.tileMap[zeroTile.row + 1][zeroTile.col];
+          board.switchTile(currentTile, zeroTile);
+          app.incrementMoveCount();
+          view.clearBoard();
+          view.buildBoard();
+          console.log(app.won());
+        }
+        break;
+      case "ArrowLeft":
+        if (zeroTile.col + 1 < dimension) {
+          let currentTile = board.tileMap[zeroTile.row][zeroTile.col + 1];
+          board.switchTile(currentTile, zeroTile);
+          app.incrementMoveCount();
+          view.clearBoard();
+          view.buildBoard();
+          console.log(app.won());
+        }
+        break;
+      case "ArrowRight":
+        if (zeroTile.col - 1 >= 0) {
+          let currentTile = board.tileMap[zeroTile.row][zeroTile.col - 1];
+          board.switchTile(currentTile, zeroTile);
+          app.incrementMoveCount();
+          view.clearBoard();
+          view.buildBoard();
+          console.log(app.won());
+        }
+        break;
+      default:
+        return;
+    }
+    event.preventDefault();
   },
   incrementMoveCount: function() {
     moveCount.innerText = Number(moveCount.innerHTML) + 1;
@@ -134,7 +187,7 @@ var board = {
 
 var handlers = {
 
-}
+};
 
 var view = {
   init: function() {
@@ -191,9 +244,10 @@ var view = {
     }
   },
   setUpEventListeners: function() {
-    canvas.addEventListener("mousedown", app.moveTile);
+    canvas.addEventListener("mousedown", app.clickMove);
+    document.addEventListener("keydown", app.keyMove);
   },
-  clearBoard: function(){
+  clearBoard: function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
