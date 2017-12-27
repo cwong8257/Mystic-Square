@@ -9,17 +9,24 @@
 </head>
 
 <body>
-  <canvas id="board"></canvas>
-  <p>Moves: <span id="moveCount">0</span></p>
-  <select id="selectSize" onchange="app.selectSize()">
-    <option value="3">3x3</option>
-    <option selected="selected" value="4">4x4</option>
-    <option value="5">5x5</option>
-    <option value="6">6x6</option>
-    <option value="7">7x7</option>
-    <option value="8">8x8</option>
-    <option value="9">9x9</option>
-  </select>
+  <div>
+    <canvas id="board"></canvas>
+    <div class="center">
+      <p>Moves: <span id="moveCount">0</span></p>
+    </div>
+    <div>
+      <select id="selectSize" onchange="app.selectSize()">
+        <option value="3">3x3</option>
+        <option selected="selected" value="4">4x4</option>
+        <option value="5">5x5</option>
+        <option value="6">6x6</option>
+        <option value="7">7x7</option>
+        <option value="8">8x8</option>
+        <option value="9">9x9</option>
+      </select>
+    </div>
+  </div>
+  
   <script src="js/fifteen.js"></script>
 </body>
 </html>

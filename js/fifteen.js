@@ -26,7 +26,6 @@ var app = {
       return;
     }
     let zeroTile = board.getZero();
-    
 
     switch (event.key) {
       case "ArrowDown":
@@ -103,7 +102,11 @@ var app = {
     board.init(sizeSelector.value);
     view.init();
     view.buildBoard();
-  }
+    app.resetMoveCount();
+  },
+  resetMoveCount: function() {
+    moveCount.innerText = 0;
+  },
 }
 
 var board = {
