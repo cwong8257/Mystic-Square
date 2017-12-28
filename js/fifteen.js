@@ -2,8 +2,11 @@ const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 const moveCount = document.getElementById("moveCount");
 const sizeSelector = document.getElementById("selectSize");
-const TILE_OPACITY = 0.7;
-const BOARD_OPACITY = 0.6;
+var minutesLabel = document.getElementById("minutes");
+var secondsLabel = document.getElementById("seconds");
+var totalSeconds = 0;
+const TILE_OPACITY = 0.5;
+const BOARD_OPACITY = 0.8;
 var dimension;
 var tileLength;
 
@@ -102,6 +105,7 @@ var app = {
   },
   selectSize: function() {
     board.init(sizeSelector.value);
+    timer.stopTimer();
     view.init();
     view.buildBoard();
     app.resetMoveCount();
@@ -190,8 +194,29 @@ var board = {
   }
 };
 
-var handlers = {
-
+var timer = {
+  init: function() {
+    setInterval(timer.setTime, 1000);
+  },
+  setTime: function() {
+    ++totalSeconds;
+    secondsLabel.innerHTML = timer.pad(totalSeconds % 60);
+    minutesLabel.innerHTML = timer.pad(parseInt(totalSeconds / 60));
+  },
+  pad: function(val) {
+    let valString = val + "";
+    if (valString.length < 2) {
+      return "0" + valString;
+    }
+    else {
+      return valString;
+    }
+  },
+  stopTimer: function() {
+    totalSeconds = 0;
+    minutesLabel.innerHTML = "00";
+    secondsLabel.innerHTML = "00";
+  }
 };
 
 var view = {
@@ -208,8 +233,8 @@ var view = {
     ctx.fillStyle = '#48d1cc';
     ctx.shadowColor = 'black';
     ctx.shadowBlur = 4;
-    ctx.shadowOffsetX = 2;
-    ctx.shadowOffsetY = 3;
+    ctx.shadowOffsetX = 4;
+    ctx.shadowOffsetY = 4;
     ctx.fillRect(pos.x + 5, pos.y + 5, tileLength * 0.9, tileLength * 0.9);
     ctx.fillStyle = '#ffffff';
     ctx.font = "20px Verdana";
@@ -284,6 +309,7 @@ var util = {
 
 document.addEventListener('DOMContentLoaded', function() {
   board.init(sizeSelector.value);
+  timer.init();
   view.init();
   view.buildBoard();
   view.setUpEventListeners();

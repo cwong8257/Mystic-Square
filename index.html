@@ -4,19 +4,24 @@
 <head>
   <meta charset="utf-8">
 
-  <title>The Game of 15</title>
+  <title>Mystic Square</title>
   <link rel="stylesheet" href="css/fifteen.css">
 </head>
 
 <body>
   <div>
     <div class="center">
-      <p id="title">Game of 15</p>
+      <p id="title">Mystic Square</p>
+    </div>
+    <div class="center">
+      <div class="stat">
+        <p>Moves: <span id="moveCount">0</span></p>
+      </div>
+      <div class="stat">
+        <p>Timer: <label id="minutes">00</label>:<label id="seconds">00</label></p>
+      </div>
     </div>
     <canvas id="board"></canvas>
-    <div class="center">
-      <p>Moves: <span id="moveCount">0</span></p>
-    </div>
     <div class="center">
       <select id="selectSize" onchange="app.selectSize()">
         <option value="3">3x3</option>
