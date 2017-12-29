@@ -1,5 +1,7 @@
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
+const moveCountDiv = document.getElementById("moveCountDiv");
+const timerDiv = document.getElementById("timerDiv");
 const moveCount = document.getElementById("moveCount");
 const sizeSelector = document.getElementById("selectSize");
 var minutesLabel = document.getElementById("minutes");
@@ -11,77 +13,23 @@ var dimension;
 var tileLength;
 
 var app = {
-  clickMove: function(event) {
-    let position = util.getPosition(event);
-    let x = position.x;
-    let y = position.y;
-    let currentTile = board.getTile(x, y);
-    let zeroTile = board.getZero();
-
-    if (board.canMove(currentTile, zeroTile)) {
-      board.switchTile(currentTile, zeroTile);
-      app.incrementMoveCount();
-      view.clearBoard();
-      view.buildBoard();
-      console.log(app.won());
-    }
+  startGame: function() {
+    board.init(sizeSelector.value);
+    timer.init();
+    view.init();
+    view.buildBoard();
+    view.setUpGameEventListeners();
+    view.removePlayAgainListener();
+    view.unHighlightStats();
+    app.resetMoveCount();
   },
-  keyMove: function(event) {
-    if (event.defaultPrevented) {
-      return;
-    }
-    let zeroTile = board.getZero();
-
-    switch (event.key) {
-      case "ArrowDown":
-        if (zeroTile.row - 1 >= 0) {
-          let currentTile = board.tileMap[zeroTile.row - 1][zeroTile.col];
-          board.switchTile(currentTile, zeroTile);
-          app.incrementMoveCount();
-          view.clearBoard();
-          view.buildBoard();
-          console.log(app.won());
-        }
-        break;
-      case "ArrowUp":
-        if (zeroTile.row + 1 < dimension) {
-          let currentTile = board.tileMap[zeroTile.row + 1][zeroTile.col];
-          board.switchTile(currentTile, zeroTile);
-          app.incrementMoveCount();
-          view.clearBoard();
-          view.buildBoard();
-          console.log(app.won());
-        }
-        break;
-      case "ArrowLeft":
-        if (zeroTile.col + 1 < dimension) {
-          let currentTile = board.tileMap[zeroTile.row][zeroTile.col + 1];
-          board.switchTile(currentTile, zeroTile);
-          app.incrementMoveCount();
-          view.clearBoard();
-          view.buildBoard();
-          console.log(app.won());
-        }
-        break;
-      case "ArrowRight":
-        if (zeroTile.col - 1 >= 0) {
-          let currentTile = board.tileMap[zeroTile.row][zeroTile.col - 1];
-          board.switchTile(currentTile, zeroTile);
-          app.incrementMoveCount();
-          view.clearBoard();
-          view.buildBoard();
-          console.log(app.won());
-        }
-        break;
-      default:
-        return;
-    }
-    event.preventDefault();
+  getReady: function() {
+    app.startGame();
   },
   incrementMoveCount: function() {
     moveCount.innerText = Number(moveCount.innerHTML) + 1;
   },
-  won: function() {
+  checkWin: function() {
     let check = [];
 
     for (var i = 0; i < dimension; i++) {
@@ -105,7 +53,7 @@ var app = {
   },
   selectSize: function() {
     board.init(sizeSelector.value);
-    timer.stopTimer();
+    timer.init();
     view.init();
     view.buildBoard();
     app.resetMoveCount();
@@ -113,6 +61,22 @@ var app = {
   resetMoveCount: function() {
     moveCount.innerText = 0;
   },
+  won: function() {
+    view.drawWin();
+    view.removeGameEventListeners();
+    timer.stopTimer();
+
+    view.highlightStats();
+  },
+  playAgain: function(event, width, height) {
+    let position = util.getMousePosition(event);
+    let x = position.x;
+    let y = position.y;
+    
+    if (x > (canvas.width - width) / 2 && x < (canvas.width + width) / 2 && y > (canvas.height - height) / 1.3 && y < (canvas.height + height) / 1.3) {
+      app.startGame();
+    }
+  }
 }
 
 var board = {
@@ -196,15 +160,18 @@ var board = {
 
 var timer = {
   init: function() {
-    setInterval(timer.setTime, 1000);
+    timer.stopTimer();
+    timer.resetTimer();
+    timer.timer = setInterval(timer.setTime, 1000);
   },
   setTime: function() {
     ++totalSeconds;
-    secondsLabel.innerHTML = timer.pad(totalSeconds % 60);
-    minutesLabel.innerHTML = timer.pad(parseInt(totalSeconds / 60));
+    secondsLabel.innerHTML = timer.padding(totalSeconds % 60);
+    minutesLabel.innerHTML = timer.padding(parseInt(totalSeconds / 60));
   },
-  pad: function(val) {
+  padding: function(val) {
     let valString = val + "";
+
     if (valString.length < 2) {
       return "0" + valString;
     }
@@ -212,12 +179,102 @@ var timer = {
       return valString;
     }
   },
-  stopTimer: function() {
+  resetTimer: function() {
     totalSeconds = 0;
     minutesLabel.innerHTML = "00";
     secondsLabel.innerHTML = "00";
+  },
+  stopTimer: function() {
+    clearInterval(timer.timer);
   }
 };
+
+var handler = {
+  clickMove: function(event) {
+    let position = util.getMousePosition(event);
+    let x = position.x;
+    let y = position.y;
+    let currentTile = board.getTile(x, y);
+    let zeroTile = board.getZero();
+
+    if (board.canMove(currentTile, zeroTile)) {
+      board.switchTile(currentTile, zeroTile);
+      app.incrementMoveCount();
+      view.clearBoard();
+      view.buildBoard();
+
+      if (app.checkWin()) {
+        app.won();
+      }
+    }
+  },
+  keyMove: function(event) {
+    if (event.defaultPrevented) {
+      return;
+    }
+    let zeroTile = board.getZero();
+
+    switch (event.key) {
+      case "ArrowDown":
+        if (zeroTile.row - 1 >= 0) {
+          let currentTile = board.tileMap[zeroTile.row - 1][zeroTile.col];
+          board.switchTile(currentTile, zeroTile);
+          app.incrementMoveCount();
+          view.clearBoard();
+          view.buildBoard();
+          if (app.checkWin()) {
+            app.won();
+          }
+        }
+        break;
+      case "ArrowUp":
+        if (zeroTile.row + 1 < dimension) {
+          let currentTile = board.tileMap[zeroTile.row + 1][zeroTile.col];
+          board.switchTile(currentTile, zeroTile);
+          app.incrementMoveCount();
+          view.clearBoard();
+          view.buildBoard();
+          if (app.checkWin()) {
+            app.won();
+          }
+        }
+        break;
+      case "ArrowLeft":
+        if (zeroTile.col + 1 < dimension) {
+          let currentTile = board.tileMap[zeroTile.row][zeroTile.col + 1];
+          board.switchTile(currentTile, zeroTile);
+          app.incrementMoveCount();
+          view.clearBoard();
+          view.buildBoard();
+          if (app.checkWin()) {
+            app.won();
+          }
+        }
+        break;
+      case "ArrowRight":
+        if (zeroTile.col - 1 >= 0) {
+          let currentTile = board.tileMap[zeroTile.row][zeroTile.col - 1];
+          board.switchTile(currentTile, zeroTile);
+          app.incrementMoveCount();
+          view.clearBoard();
+          view.buildBoard();
+          if (app.checkWin()) {
+            app.won();
+          }
+        }
+        break;
+      default:
+        return;
+    }
+    event.preventDefault();
+  },
+  playAgain: function(event) {
+    let width = 230;
+    let height = 50;
+
+    app.playAgain(event, width, height);
+  }
+}
 
 var view = {
   init: function() {
@@ -279,10 +336,6 @@ var view = {
       pos.texty += tileLength; 
     }
   },
-  setUpEventListeners: function() {
-    canvas.addEventListener("mousedown", app.clickMove);
-    document.addEventListener("keydown", app.keyMove);
-  },
   clearBoard: function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.globalAlpha = BOARD_OPACITY;
@@ -291,11 +344,50 @@ var view = {
     ctx.shadowOffsetY = 0;
     ctx.fillStyle = '#3A3335';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+  },
+  drawWin: function() {
+    let width = 230;
+    let height = 50;
+
+    view.clearBoard();
+    ctx.font = "40px Courier New";
+    ctx.fillStyle = 'white';
+    ctx.textAlign = "center"; 
+    ctx.fillText("You Win!", canvas.width / 2, canvas.height / 2);
+    ctx.strokeRect((canvas.width - width) / 2, (canvas.height - height) / 1.3, width, height);
+    ctx.fillRect((canvas.width - width) / 2, (canvas.height - height) / 1.3, width, height);
+    ctx.font = "30px Courier New";
+    ctx.fillStyle = 'black';
+    ctx.fillText("Play again", canvas.width / 2, canvas.height / 1.3);
+
+    view.setUpPlayAgainListener(width, height);
+  },
+  highlightStats: function() {
+    moveCountDiv.style.animationName = "example";
+    timerDiv.style.animationName = "example";
+  },
+  unHighlightStats: function() {
+    moveCountDiv.style.animationName = "";
+    timerDiv.style.animationName = "";
+  },
+  setUpGameEventListeners: function() {
+    canvas.addEventListener("mousedown", handler.clickMove);
+    document.addEventListener("keydown", handler.keyMove);
+  },
+  removeGameEventListeners: function() {
+    canvas.removeEventListener("mousedown", handler.clickMove);
+    document.removeEventListener("keydown", handler.keyMove);
+  },
+  setUpPlayAgainListener: function() {
+    canvas.addEventListener("mousedown", handler.playAgain);
+  },
+  removePlayAgainListener: function() {
+    canvas.removeEventListener("mousedown", handler.playAgain);
   }
 };
 
 var util = {
-  getPosition: function(event) {
+  getMousePosition: function(event) {
     let rect = canvas.getBoundingClientRect();
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
@@ -308,9 +400,5 @@ var util = {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  board.init(sizeSelector.value);
-  timer.init();
-  view.init();
-  view.buildBoard();
-  view.setUpEventListeners();
+  app.getReady();
 });
