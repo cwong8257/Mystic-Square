@@ -14,17 +14,24 @@ var tileLength;
 
 var app = {
   startGame: function() {
-    board.init(sizeSelector.value);
     timer.init();
-    view.init();
+    view.clearBoard();
     view.buildBoard();
     view.setUpGameEventListeners();
+    view.removeClickPlayListener();
     view.removePlayAgainListener();
     view.unHighlightStats();
     app.resetMoveCount();
   },
   getReady: function() {
-    app.startGame();
+    board.init(sizeSelector.value);
+    view.init();
+    view.setUpClickPlayListener();
+    view.removePlayAgainListener();
+    view.unHighlightStats();
+    timer.stopTimer();
+    timer.resetTimer();
+    app.resetMoveCount();
   },
   incrementMoveCount: function() {
     moveCount.innerText = Number(moveCount.innerHTML) + 1;
@@ -50,13 +57,6 @@ var app = {
       }
     }
     return true;
-  },
-  selectSize: function() {
-    board.init(sizeSelector.value);
-    timer.init();
-    view.init();
-    view.buildBoard();
-    app.resetMoveCount();
   },
   resetMoveCount: function() {
     moveCount.innerText = 0;
@@ -273,6 +273,9 @@ var handler = {
     let height = 50;
 
     app.playAgain(event, width, height);
+  },
+  clickPlay: function(event) {
+    app.startGame();
   }
 }
 
@@ -284,6 +287,10 @@ var view = {
     ctx.globalAlpha = BOARD_OPACITY;
     ctx.fillStyle = '#3A3335';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = "40px Courier New";
+    ctx.fillStyle = 'white';
+    ctx.textAlign = "center"; 
+    ctx.fillText("Play", canvas.width / 2, canvas.height / 2);
   },
   drawTile: function(pos, map, i, j) {
     ctx.globalAlpha = TILE_OPACITY;
@@ -295,12 +302,8 @@ var view = {
     ctx.fillRect(pos.x + 5, pos.y + 5, tileLength * 0.9, tileLength * 0.9);
     ctx.fillStyle = '#ffffff';
     ctx.font = "20px Verdana";
-    if (map[i][j] >= 10) {
-      ctx.fillText(map[i][j], pos.textx - 5 , pos.texty);
-    }
-    else {
-      ctx.fillText(map[i][j], pos.textx, pos.texty);
-    }
+    ctx.fillText(map[i][j], pos.textx + 5, pos.texty);
+
   },
   buildBoard: function() {
     let map = board.tiles;
@@ -383,6 +386,12 @@ var view = {
   },
   removePlayAgainListener: function() {
     canvas.removeEventListener("mousedown", handler.playAgain);
+  },
+  setUpClickPlayListener: function() {
+    canvas.addEventListener("mousedown", handler.clickPlay);
+  },
+  removeClickPlayListener: function() {
+    canvas.removeEventListener("mousedown", handler.clickPlay);
   }
 };
 
