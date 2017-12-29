@@ -2,7 +2,7 @@ const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 const moveCountDiv = document.getElementById("moveCountDiv");
 const timerDiv = document.getElementById("timerDiv");
-const moveCount = document.getElementById("moveCount");
+const moveCounter = document.getElementById("moveCount");
 const sizeSelector = document.getElementById("selectSize");
 var minutesLabel = document.getElementById("minutes");
 var secondsLabel = document.getElementById("seconds");
@@ -21,7 +21,7 @@ var app = {
     view.removeClickPlayListener();
     view.removePlayAgainListener();
     view.unHighlightStats();
-    app.resetMoveCount();
+    moveCount.resetMoveCount();
   },
   getReady: function() {
     board.init(sizeSelector.value);
@@ -31,10 +31,7 @@ var app = {
     view.unHighlightStats();
     timer.stopTimer();
     timer.resetTimer();
-    app.resetMoveCount();
-  },
-  incrementMoveCount: function() {
-    moveCount.innerText = Number(moveCount.innerHTML) + 1;
+    moveCount.resetMoveCount();
   },
   checkWin: function() {
     let check = [];
@@ -46,7 +43,6 @@ var app = {
         check[i][j] = num;
       }
     }
-    
     check[dimension - 1][dimension - 1] = 0;
     
     for (var i = 0; i < dimension; i++) {
@@ -57,9 +53,6 @@ var app = {
       }
     }
     return true;
-  },
-  resetMoveCount: function() {
-    moveCount.innerText = 0;
   },
   won: function() {
     view.drawWin();
@@ -95,7 +88,7 @@ var board = {
       }
     }
   },
-  getZero: function() {
+  getZeroTile: function() {
     let tileMap = this.tileMap;
 
     for (let i = 0; i < dimension; i++) {
@@ -158,6 +151,15 @@ var board = {
   }
 };
 
+var moveCount = {
+  resetMoveCount: function() {
+    moveCounter.innerText = 0;
+  },
+  incrementMoveCount: function() {
+    moveCounter.innerText = Number(moveCounter.innerHTML) + 1;
+  }
+}
+
 var timer = {
   init: function() {
     timer.stopTimer();
@@ -195,11 +197,11 @@ var handler = {
     let x = position.x;
     let y = position.y;
     let currentTile = board.getTile(x, y);
-    let zeroTile = board.getZero();
+    let zeroTile = board.getZeroTile();
 
     if (board.canMove(currentTile, zeroTile)) {
       board.switchTile(currentTile, zeroTile);
-      app.incrementMoveCount();
+      moveCount.incrementMoveCount();
       view.clearBoard();
       view.buildBoard();
 
@@ -212,14 +214,14 @@ var handler = {
     if (event.defaultPrevented) {
       return;
     }
-    let zeroTile = board.getZero();
+    let zeroTile = board.getZeroTile();
 
     switch (event.key) {
       case "ArrowDown":
         if (zeroTile.row - 1 >= 0) {
           let currentTile = board.tileMap[zeroTile.row - 1][zeroTile.col];
           board.switchTile(currentTile, zeroTile);
-          app.incrementMoveCount();
+          moveCount.incrementMoveCount();
           view.clearBoard();
           view.buildBoard();
           if (app.checkWin()) {
@@ -231,7 +233,7 @@ var handler = {
         if (zeroTile.row + 1 < dimension) {
           let currentTile = board.tileMap[zeroTile.row + 1][zeroTile.col];
           board.switchTile(currentTile, zeroTile);
-          app.incrementMoveCount();
+          moveCount.incrementMoveCount();
           view.clearBoard();
           view.buildBoard();
           if (app.checkWin()) {
@@ -243,7 +245,7 @@ var handler = {
         if (zeroTile.col + 1 < dimension) {
           let currentTile = board.tileMap[zeroTile.row][zeroTile.col + 1];
           board.switchTile(currentTile, zeroTile);
-          app.incrementMoveCount();
+          moveCount.incrementMoveCount();
           view.clearBoard();
           view.buildBoard();
           if (app.checkWin()) {
@@ -255,7 +257,7 @@ var handler = {
         if (zeroTile.col - 1 >= 0) {
           let currentTile = board.tileMap[zeroTile.row][zeroTile.col - 1];
           board.switchTile(currentTile, zeroTile);
-          app.incrementMoveCount();
+          moveCount.incrementMoveCount();
           view.clearBoard();
           view.buildBoard();
           if (app.checkWin()) {
