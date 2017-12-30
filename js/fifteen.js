@@ -14,7 +14,8 @@ var tileLength;
 
 var app = {
   startGame: function() {
-    timer.init();
+    board.init(sizeSelector.value);
+    view.init();
     view.clearBoard();
     view.buildBoard();
     view.setUpGameEventListeners();
@@ -22,6 +23,7 @@ var app = {
     view.removePlayAgainListener();
     view.unHighlightStats();
     moveCount.resetMoveCount();
+    timer.init();
   },
   getReady: function() {
     board.init(sizeSelector.value);
@@ -29,9 +31,9 @@ var app = {
     view.setUpClickPlayListener();
     view.removePlayAgainListener();
     view.unHighlightStats();
+    moveCount.resetMoveCount();
     timer.stopTimer();
     timer.resetTimer();
-    moveCount.resetMoveCount();
   },
   checkWin: function() {
     let check = [];
@@ -407,6 +409,16 @@ var util = {
       x: x,
       y: y
     };
+  },
+  getInversionCount: function(tiles) {
+    let count = 0;
+    for (let i = 0; i < dimension * dimension - 1; i++) {
+      for (let j = i + 1; j < dimension * dimension; j++) {
+        if (arr[j] && arr[i] && arr[i] > arr[j])
+          count++;
+      }
+    }
+    return inv_count;
   }
 }
 

@@ -12,14 +12,14 @@
   <div class="center">
     <div>
       <div class="center">
-        <p id="title">Mystic Square</p>
+        <span id="title">MYSTIC SQUARE</span>
       </div>
       <div class="center">
         <div id="moveCountDiv" class="stat">
-          <p>Moves: <span id="moveCount">0</span></p>
+          <p class="label center-text">Moves</p><p id="moveCount" class="center-text">0</p>
         </div>
         <div id="timerDiv" class="stat">
-          <p>Timer: <label id="minutes">00</label>:<label id="seconds">00</label></p>
+          <p class="label center-text">Time</p><p class="center-text"><span id="minutes">00</span>:<span id="seconds">00</span></p>
         </div>
       </div>
       <canvas id="board"></canvas>
@@ -40,8 +40,6 @@
       <p>Move tiles in grid into ascending order. To move a tile you can click on it or use your arrow keys.</p>
     </div>
   </div>
-
-  
   <script src="js/fifteen.js"></script>
 </body>
 </html>
