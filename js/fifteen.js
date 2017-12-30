@@ -298,7 +298,7 @@ var view = {
   },
   drawTile: function(pos, map, i, j) {
     ctx.globalAlpha = TILE_OPACITY;
-    ctx.fillStyle = '#48d1cc';
+    ctx.fillStyle = '#ff392e';
     ctx.shadowColor = 'black';
     ctx.shadowBlur = 4;
     ctx.shadowOffsetX = 4;
