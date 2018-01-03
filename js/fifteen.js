@@ -4,17 +4,15 @@ const moveCountDiv = document.getElementById("moveCountDiv");
 const timerDiv = document.getElementById("timerDiv");
 const moveCounter = document.getElementById("moveCount");
 const sizeSelector = document.getElementById("selectSize");
-var minutesLabel = document.getElementById("minutes");
-var secondsLabel = document.getElementById("seconds");
-var totalSeconds = 0;
-const TILE_OPACITY = 0.5;
-const BOARD_OPACITY = 0.8;
+const minutesLabel = document.getElementById("minutes");
+const secondsLabel = document.getElementById("seconds");
 var dimension;
-var tileLength;
+const TILE_LENGTH = 100;
 
-var app = {
-  startGame: function() {
+var app = (function() {
+  function startGame() {
     board.init(sizeSelector.value);
+    board.generateWinningBoard();
     view.init();
     view.clearBoard();
     view.buildBoard();
@@ -23,47 +21,42 @@ var app = {
     view.removePlayAgainListener();
     view.unHighlightStats();
     moveCount.resetMoveCount();
-    timer.init();
-  },
-  getReady: function() {
+    timer.startTimer();
+  }
+  
+  function getReady() {
     board.init(sizeSelector.value);
     view.init();
     view.setUpClickPlayListener();
     view.removePlayAgainListener();
+    view.removeGameEventListeners();
     view.unHighlightStats();
     moveCount.resetMoveCount();
     timer.stopTimer();
     timer.resetTimer();
-  },
-  checkWin: function() {
-    let check = [];
+  }
 
-    for (var i = 0; i < dimension; i++) {
-      check[i] = [];
-      for (var j = 0; j < dimension; j++) {
-        let num = i * dimension + j + 1;
-        check[i][j] = num;
-      }
-    }
-    check[dimension - 1][dimension - 1] = 0;
-    
+  function checkWin() {
     for (var i = 0; i < dimension; i++) {
       for (var j = 0; j < dimension; j++) {
-        if (board.tiles[i][j] != check[i][j]) {
+        debugger;
+        if (board.tiles[i][j] != board.winningBoard[i][j]) {
           return false;
         }
       }
     }
     return true;
-  },
-  won: function() {
+  }
+
+  function won() {
     view.drawWin();
     view.removeGameEventListeners();
     timer.stopTimer();
 
     view.highlightStats();
-  },
-  playAgain: function(event, width, height) {
+  }
+
+  function playAgain(event, width, height) {
     let position = util.getMousePosition(event);
     let x = position.x;
     let y = position.y;
@@ -72,69 +65,24 @@ var app = {
       app.startGame();
     }
   }
-}
 
-var board = {
-  tiles: [],
-  tileMap: [],
-  getTile: function(x, y) {
-    let tileMap = this.tileMap;
-    let tile = view.tile;
+  return {
+    startGame: startGame,
+    getReady: getReady,
+    checkWin: checkWin,
+    won: won,
+    playAgain: playAgain
+  }
+})();
 
-    for (let i = 0; i < dimension; i++) {
-      for (let j = 0; j < dimension; j++) {
-        if (y >= tileMap[i][j].y && y <= tileMap[i][j].y + tileLength &&
-          x >= tileMap[i][j].x && x <= tileMap[i][j].x + tileLength) {
-            return tileMap[i][j];
-        }
-      }
-    }
-  },
-  getZeroTile: function() {
-    let tileMap = this.tileMap;
 
-    for (let i = 0; i < dimension; i++) {
-      for (let j = 0; j < dimension; j++) {
-        if (tileMap[i][j].tileName === 0) {
-          return tileMap[i][j];
-        }
-      }
-    }
-  },
-  switchTile: function(currentTile, zeroTile) {
-    let zeroRow = zeroTile.row;
-    let zeroCol = zeroTile.col;
-    let tileRow = currentTile.row;
-    let tileCol = currentTile.col;
-    let tiles = this.tiles;
-    let tileMap = this.tileMap;
-    let temp;
-    
-    temp = tiles[zeroRow][zeroCol];
-    tiles[zeroRow][zeroCol] = tiles[tileRow][tileCol];
-    tiles[tileRow][tileCol] = temp;
+var board = (function() {
+  var tiles = [];
+  var tileMap = [];
+  var winningBoard = [];
 
-    temp = tileMap[zeroRow][zeroCol];
-    tileMap[zeroRow][zeroCol] = tileMap[tileRow][tileCol];
-    tileMap[tileRow][tileCol] = temp;
-  },
-  canMove: function(currentTile, zeroTile) {
-    let zeroRow = zeroTile.row;
-    let zeroCol = zeroTile.col;
-    let tileRow = currentTile.row;
-    let tileCol = currentTile.col;
-    
-    if ((zeroRow === tileRow && Math.abs(zeroCol - tileCol) === 1) ||
-    (Math.abs(zeroRow - tileRow) === 1 && zeroCol === tileCol)) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  },
-  init: function(dim) {
+  function init(dim) {
     dimension = dim;
-    let tiles = this.tiles;
 
     let temp;
     
@@ -151,50 +99,142 @@ var board = {
       tiles[dimension - 1][dimension - 3] = temp;
     }
   }
-};
 
-var moveCount = {
-  resetMoveCount: function() {
-    moveCounter.innerText = 0;
-  },
-  incrementMoveCount: function() {
-    moveCounter.innerText = Number(moveCounter.innerHTML) + 1;
+  function buildBoard() {
+
   }
-}
 
-var timer = {
-  init: function() {
-    timer.stopTimer();
-    timer.resetTimer();
-    timer.timer = setInterval(timer.setTime, 1000);
-  },
-  setTime: function() {
-    ++totalSeconds;
-    secondsLabel.innerHTML = timer.padding(totalSeconds % 60);
-    minutesLabel.innerHTML = timer.padding(parseInt(totalSeconds / 60));
-  },
-  padding: function(val) {
-    let valString = val + "";
+  function getTile(x, y) {
+    for (let i = 0; i < dimension; i++) {
+      for (let j = 0; j < dimension; j++) {
+        if (y >= tileMap[i][j].y && y <= tileMap[i][j].y + TILE_LENGTH &&
+          x >= tileMap[i][j].x && x <= tileMap[i][j].x + TILE_LENGTH) {
+            return tileMap[i][j];
+        }
+      }
+    }
+  }
 
-    if (valString.length < 2) {
-      return "0" + valString;
+  function getZeroTile() {
+    for (let i = 0; i < dimension; i++) {
+      for (let j = 0; j < dimension; j++) {
+        if (tileMap[i][j].tileName === 0) {
+          return tileMap[i][j];
+        }
+      }
+    }
+  }
+
+  function switchTile(currentTile, zeroTile) {
+    let zeroRow = zeroTile.row;
+    let zeroCol = zeroTile.col;
+    let tileRow = currentTile.row;
+    let tileCol = currentTile.col;
+    let temp;
+    
+    temp = tiles[zeroRow][zeroCol];
+    tiles[zeroRow][zeroCol] = tiles[tileRow][tileCol];
+    tiles[tileRow][tileCol] = temp;
+
+    temp = tileMap[zeroRow][zeroCol];
+    tileMap[zeroRow][zeroCol] = tileMap[tileRow][tileCol];
+    tileMap[tileRow][tileCol] = temp;
+  }
+
+  function canMove(currentTile, zeroTile) {
+    let zeroRow = zeroTile.row;
+    let zeroCol = zeroTile.col;
+    let tileRow = currentTile.row;
+    let tileCol = currentTile.col;
+    
+    if ((zeroRow === tileRow && Math.abs(zeroCol - tileCol) === 1) ||
+    (Math.abs(zeroRow - tileRow) === 1 && zeroCol === tileCol)) {
+      return true;
     }
     else {
-      return valString;
+      return false;
     }
-  },
-  resetTimer: function() {
-    totalSeconds = 0;
-    minutesLabel.innerHTML = "00";
-    secondsLabel.innerHTML = "00";
-  },
-  stopTimer: function() {
+  }
+
+  function generateWinningBoard() {
+    for (let i = 0; i < dimension; i++) {
+      winningBoard[i] = [];
+      for (let j = 0; j < dimension; j++) {
+        let num = i * dimension + j + 1;
+        winningBoard[i][j] = num;
+      }
+    }
+    winningBoard[dimension - 1][dimension - 1] = 0;
+  }
+
+  return {
+    init: init,
+    tiles: tiles,
+    tileMap: tileMap,
+    winningBoard: winningBoard,
+    getTile: getTile,
+    getZeroTile: getZeroTile,
+    switchTile: switchTile,
+    canMove: canMove,
+    generateWinningBoard: generateWinningBoard
+  };
+})();
+
+
+var moveCount = (function() {
+  var moveCount = 0;
+
+  function resetMoveCount() {
+    moveCount = 0;
+    view.resetMoveCount();
+  }
+
+  function incrementMoveCount() {
+    moveCount++;
+    view.setMoveCount(moveCount);
+  }
+
+  return {
+    resetMoveCount: resetMoveCount,
+    incrementMoveCount: incrementMoveCount
+  }
+})();
+
+
+var timer = (function() {
+  var seconds = 0;
+
+  function startTimer() {
+    timer.stopTimer();
+    timer.resetTimer();
+    timer.timer = setInterval(timer.setTimer, 1000);
+  }
+
+  function setTimer() {
+    seconds++;
+    view.setTimer(seconds);
+  }
+
+  function resetTimer() {
+    seconds = 0;
+    view.resetTimer();
+  }
+
+  function stopTimer() {
     clearInterval(timer.timer);
   }
-};
 
-var handler = {
-  clickMove: function(event) {
+  return {
+    startTimer: startTimer,
+    setTimer: setTimer,
+    resetTimer: resetTimer,
+    stopTimer: stopTimer
+  };
+})();
+
+
+var handler = (function() {
+  function clickMove(event) {
     let position = util.getMousePosition(event);
     let x = position.x;
     let y = position.y;
@@ -211,8 +251,9 @@ var handler = {
         app.won();
       }
     }
-  },
-  keyMove: function(event) {
+  }
+
+  function keyMove(event) {
     if (event.defaultPrevented) {
       return;
     }
@@ -271,23 +312,36 @@ var handler = {
         return;
     }
     event.preventDefault();
-  },
-  playAgain: function(event) {
+  }
+
+  function playAgain(event) {
     let width = 230;
     let height = 50;
 
     app.playAgain(event, width, height);
-  },
-  clickPlay: function(event) {
+  }
+
+  function clickPlay(event) {
     app.startGame();
   }
-}
 
-var view = {
-  init: function() {
-    tileLength = 100;
-    canvas.width = dimension * tileLength;
-    canvas.height = dimension * tileLength;
+
+  return {
+    clickMove: clickMove,
+    keyMove: keyMove,
+    playAgain: playAgain,
+    clickPlay: clickPlay
+  };
+})();
+
+
+var view = (function() {
+  const TILE_OPACITY = 0.5;
+  const BOARD_OPACITY = 0.8;
+
+  function init() {
+    canvas.width = dimension * TILE_LENGTH;
+    canvas.height = dimension * TILE_LENGTH;
     ctx.globalAlpha = BOARD_OPACITY;
     ctx.fillStyle = '#3A3335';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -295,30 +349,30 @@ var view = {
     ctx.fillStyle = 'white';
     ctx.textAlign = "center"; 
     ctx.fillText("Play", canvas.width / 2, canvas.height / 2);
-  },
-  drawTile: function(pos, map, i, j) {
+  }
+
+  function drawTile(pos, map, i, j) {
     ctx.globalAlpha = TILE_OPACITY;
     ctx.fillStyle = '#ff392e';
     ctx.shadowColor = 'black';
     ctx.shadowBlur = 4;
     ctx.shadowOffsetX = 4;
     ctx.shadowOffsetY = 4;
-    ctx.fillRect(pos.x + 5, pos.y + 5, tileLength * 0.9, tileLength * 0.9);
+    ctx.fillRect(pos.x + 5, pos.y + 5, TILE_LENGTH * 0.9, TILE_LENGTH * 0.9);
     ctx.fillStyle = '#ffffff';
     ctx.font = "20px Verdana";
     ctx.fillText(map[i][j], pos.textx + 5, pos.texty);
+  }
 
-  },
-  buildBoard: function() {
+  function buildBoard() {
     let map = board.tiles;
     let tileMap = board.tileMap;
     let pos = {
       x: 0,
       y: 0,
-      textx: (tileLength / 2) - 5,
-      texty: (tileLength / 2) + 5
+      textx: (TILE_LENGTH / 2) - 5,
+      texty: (TILE_LENGTH / 2) + 5
     }
-
     for (let i = 0; i < map.length; i++) {
       tileMap[i] = [];
 
@@ -334,16 +388,17 @@ var view = {
           this.drawTile(pos, map, i, j);
         }
         tileMap[i].push(currentTile);
-        pos.x += tileLength;
-        pos.textx += tileLength;
+        pos.x += TILE_LENGTH;
+        pos.textx += TILE_LENGTH;
       }
       pos.x = 0;
-      pos.y += tileLength;
-      pos.textx = (tileLength / 2) - 5;
-      pos.texty += tileLength; 
+      pos.y += TILE_LENGTH;
+      pos.textx = (TILE_LENGTH / 2) - 5;
+      pos.texty += TILE_LENGTH; 
     }
-  },
-  clearBoard: function() {
+  }
+
+  function clearBoard() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.globalAlpha = BOARD_OPACITY;
     ctx.shadowBlur = 0;
@@ -351,8 +406,9 @@ var view = {
     ctx.shadowOffsetY = 0;
     ctx.fillStyle = '#3A3335';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-  },
-  drawWin: function() {
+  }
+
+  function drawWin() {
     let width = 230;
     let height = 50;
 
@@ -368,59 +424,118 @@ var view = {
     ctx.fillText("Play again", canvas.width / 2, canvas.height / 1.3);
 
     view.setUpPlayAgainListener(width, height);
-  },
-  highlightStats: function() {
+  }
+
+  function resetMoveCount() {
+    moveCounter.innerText = 0;
+  }
+
+  function setMoveCount(moveCount) {
+    moveCounter.innerText = moveCount;
+  }
+
+  function resetTimer() {
+    minutesLabel.innerHTML = "00";
+    secondsLabel.innerHTML = "00";
+  }
+
+  function setTimer(seconds) {
+    secondsLabel.innerHTML = util.padding(seconds % 60);
+    minutesLabel.innerHTML = util.padding(parseInt(seconds / 60));
+  }
+
+  function highlightStats() {
     moveCountDiv.style.animationName = "example";
     timerDiv.style.animationName = "example";
-  },
-  unHighlightStats: function() {
+  }
+
+  function unHighlightStats() {
     moveCountDiv.style.animationName = "";
     timerDiv.style.animationName = "";
-  },
-  setUpGameEventListeners: function() {
+  }
+
+  function setUpGameEventListeners() {
     canvas.addEventListener("mousedown", handler.clickMove);
     document.addEventListener("keydown", handler.keyMove);
-  },
-  removeGameEventListeners: function() {
+  }
+
+  function removeGameEventListeners() {
     canvas.removeEventListener("mousedown", handler.clickMove);
     document.removeEventListener("keydown", handler.keyMove);
-  },
-  setUpPlayAgainListener: function() {
+  }
+
+  function setUpPlayAgainListener() {
     canvas.addEventListener("mousedown", handler.playAgain);
-  },
-  removePlayAgainListener: function() {
+  }
+
+  function removePlayAgainListener() {
     canvas.removeEventListener("mousedown", handler.playAgain);
-  },
-  setUpClickPlayListener: function() {
+  }
+
+  function setUpClickPlayListener() {
     canvas.addEventListener("mousedown", handler.clickPlay);
-  },
-  removeClickPlayListener: function() {
+  }
+
+  function removeClickPlayListener() {
     canvas.removeEventListener("mousedown", handler.clickPlay);
   }
-};
 
-var util = {
-  getMousePosition: function(event) {
-    let rect = canvas.getBoundingClientRect();
-    let x = event.clientX - rect.left;
-    let y = event.clientY - rect.top;
+  return {
+    init: init,
+    drawTile: drawTile,
+    buildBoard: buildBoard,
+    clearBoard: clearBoard,
+    drawWin: drawWin,
+    resetMoveCount: resetMoveCount,
+    setMoveCount: setMoveCount,
+    resetTimer: resetTimer,
+    setTimer: setTimer,
+    highlightStats: highlightStats,
+    unHighlightStats: unHighlightStats,
+    setUpGameEventListeners: setUpGameEventListeners,
+    removeGameEventListeners: removeGameEventListeners,
+    setUpPlayAgainListener: setUpPlayAgainListener,
+    removePlayAgainListener: removePlayAgainListener,
+    setUpClickPlayListener: setUpClickPlayListener,
+    removeClickPlayListener: removeClickPlayListener
+  };
+})();
 
-    return {
-      x: x,
-      y: y
-    };
-  },
-  getInversionCount: function(tiles) {
-    let count = 0;
-    for (let i = 0; i < dimension * dimension - 1; i++) {
-      for (let j = i + 1; j < dimension * dimension; j++) {
-        if (arr[j] && arr[i] && arr[i] > arr[j])
-          count++;
+
+var util = (function() {
+  return {
+    getMousePosition: function(event) {
+      let rect = canvas.getBoundingClientRect();
+      let x = event.clientX - rect.left;
+      let y = event.clientY - rect.top;
+  
+      return {
+        x: x,
+        y: y
+      };
+    },
+    getInversionCount: function(tiles) {
+      let count = 0;
+      for (let i = 0; i < dimension * dimension - 1; i++) {
+        for (let j = i + 1; j < dimension * dimension; j++) {
+          if (arr[j] && arr[i] && arr[i] > arr[j])
+            count++;
+        }
+      }
+      return count;
+    },
+    padding: function(val) {
+      let valString = val + "";
+  
+      if (valString.length < 2) {
+        return "0" + valString;
+      }
+      else {
+        return valString;
       }
     }
-    return inv_count;
-  }
-}
+  };
+})();
 
 document.addEventListener('DOMContentLoaded', function() {
   app.getReady();
