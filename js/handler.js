@@ -12,8 +12,8 @@ var handler = (function() {
       view.clearBoard();
       view.buildBoard();
 
-      if (app.checkWin()) {
-        app.won();
+      if (game.checkWin()) {
+        game.won();
       }
     }
   }
@@ -32,8 +32,8 @@ var handler = (function() {
           moveCount.incrementMoveCount();
           view.clearBoard();
           view.buildBoard();
-          if (app.checkWin()) {
-            app.won();
+          if (game.checkWin()) {
+            game.won();
           }
         }
         break;
@@ -44,8 +44,8 @@ var handler = (function() {
           moveCount.incrementMoveCount();
           view.clearBoard();
           view.buildBoard();
-          if (app.checkWin()) {
-            app.won();
+          if (game.checkWin()) {
+            game.won();
           }
         }
         break;
@@ -56,8 +56,8 @@ var handler = (function() {
           moveCount.incrementMoveCount();
           view.clearBoard();
           view.buildBoard();
-          if (app.checkWin()) {
-            app.won();
+          if (game.checkWin()) {
+            game.won();
           }
         }
         break;
@@ -68,8 +68,8 @@ var handler = (function() {
           moveCount.incrementMoveCount();
           view.clearBoard();
           view.buildBoard();
-          if (app.checkWin()) {
-            app.won();
+          if (game.checkWin()) {
+            game.won();
           }
         }
         break;
@@ -83,11 +83,11 @@ var handler = (function() {
     let width = 230;
     let height = 50;
 
-    app.playAgain(event, width, height);
+    game.playAgain(event, width, height);
   }
 
   function clickPlay(event) {
-    app.startGame();
+    game.startGame();
   }
 
 

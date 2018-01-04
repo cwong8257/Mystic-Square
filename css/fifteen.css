@@ -25,6 +25,10 @@ canvas {
   margin: 0px auto 20px auto;
   display: block;
 }
+th, td {
+  padding: 10px 30px 10px 30px;
+  text-align: left;
+}
 #title {
   font-family: Mystic-Singler, Charcoal, sans-serif;
   font-size: 80px;
@@ -49,6 +53,12 @@ canvas {
   animation-duration: 1s;
   animation-iteration-count: infinite;
   animation-direction: alternate;
+}
+#leaderBoardDiv {
+  height: 400px;
+}
+#leaderBoard {
+  overflow-y: auto;
 }
 .center {
   display: flex;

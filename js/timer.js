@@ -1,6 +1,10 @@
 var timer = (function() {
   var seconds = 0;
 
+  function getSeconds() {
+    return seconds;
+  }
+
   function startTimer() {
     timer.stopTimer();
     timer.resetTimer();
@@ -22,6 +26,7 @@ var timer = (function() {
   }
 
   return {
+    getSeconds: getSeconds,
     startTimer: startTimer,
     setTimer: setTimer,
     resetTimer: resetTimer,

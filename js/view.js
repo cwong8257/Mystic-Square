@@ -1,28 +1,27 @@
 var view = (function() {
-  const TILE_OPACITY = 0.5;
-  const BOARD_OPACITY = 0.8;
-
   function init() {
     canvas.width = dimension * TILE_LENGTH;
     canvas.height = dimension * TILE_LENGTH;
     ctx.globalAlpha = BOARD_OPACITY;
-    ctx.fillStyle = '#3A3335';
+    ctx.fillStyle = BOARD_COLOR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.font = "40px Courier New";
     ctx.fillStyle = 'white';
     ctx.textAlign = "center"; 
     ctx.fillText("Play", canvas.width / 2, canvas.height / 2);
+
+    buildLeaderBoard();
   }
 
   function drawTile(pos, map, i, j) {
     ctx.globalAlpha = TILE_OPACITY;
-    ctx.fillStyle = '#ff392e';
+    ctx.fillStyle = TILE_COLOR;
     ctx.shadowColor = 'black';
     ctx.shadowBlur = 4;
     ctx.shadowOffsetX = 4;
     ctx.shadowOffsetY = 4;
     ctx.fillRect(pos.x + 5, pos.y + 5, TILE_LENGTH * 0.9, TILE_LENGTH * 0.9);
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = 'white';
     ctx.font = "20px Verdana";
     ctx.fillText(map[i][j], pos.textx + 5, pos.texty);
   }
@@ -35,7 +34,7 @@ var view = (function() {
       y: 0,
       textx: (TILE_LENGTH / 2) - 5,
       texty: (TILE_LENGTH / 2) + 5
-    }
+    };
     for (let i = 0; i < map.length; i++) {
       tileMap[i] = [];
 
@@ -67,8 +66,39 @@ var view = (function() {
     ctx.shadowBlur = 0;
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
-    ctx.fillStyle = '#3A3335';
+    ctx.fillStyle = BOARD_COLOR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function buildLeaderBoard() {
+    clearLeaderBoard();
+
+    let tableBody = leaderBoardTable.getElementsByTagName('tbody')[0];
+    let scores = leaderBoard.getLeaderBoard();
+
+    if (!scores) {
+      return;
+    }
+
+    let filteredResult = scores.filter(score => score.size === dimension);
+
+    filteredResult.forEach(score => {
+      let row = tableBody.insertRow();
+      let cell1 = row.insertCell(0);
+      let cell2 = row.insertCell(1);
+      let cell3 = row.insertCell(2);
+      
+      row.classList.add("item");
+      cell1.innerHTML = score.size;
+      cell2.innerHTML = score.moveCount;
+      cell3.innerHTML = score.time;
+    })
+  }
+
+  function clearLeaderBoard() {
+    let oldTableBody = leaderBoardTable.getElementsByTagName('tbody')[0];
+    let newTableBody = document.createElement('tbody');
+    oldTableBody.parentNode.replaceChild(newTableBody, oldTableBody);
   }
 
   function drawWin() {
@@ -76,13 +106,13 @@ var view = (function() {
     let height = 50;
 
     view.clearBoard();
-    ctx.font = "40px Courier New";
+    ctx.font = '40px Courier New';
     ctx.fillStyle = 'white';
-    ctx.textAlign = "center"; 
+    ctx.textAlign = 'center'; 
     ctx.fillText("You Win!", canvas.width / 2, canvas.height / 2);
     ctx.strokeRect((canvas.width - width) / 2, (canvas.height - height) / 1.3, width, height);
     ctx.fillRect((canvas.width - width) / 2, (canvas.height - height) / 1.3, width, height);
-    ctx.font = "30px Courier New";
+    ctx.font = '30px Courier New';
     ctx.fillStyle = 'black';
     ctx.fillText("Play again", canvas.width / 2, canvas.height / 1.3);
 
@@ -153,6 +183,7 @@ var view = (function() {
     setMoveCount: setMoveCount,
     resetTimer: resetTimer,
     setTimer: setTimer,
+    buildLeaderBoard: buildLeaderBoard,
     highlightStats: highlightStats,
     unHighlightStats: unHighlightStats,
     setUpGameEventListeners: setUpGameEventListeners,

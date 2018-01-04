@@ -3,8 +3,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-
   <title>Mystic Square</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/fifteen.css">
 </head>
 
@@ -24,29 +24,43 @@
       </div>
       <canvas id="board"></canvas>
       <div class="center">
-        <select id="selectSize" onchange="app.getReady()">
+        <select id="selectSize" onchange="game.getReady()">
           <option value="3">3x3</option>
           <option selected="selected" value="4">4x4</option>
           <option value="5">5x5</option>
           <option value="6">6x6</option>
-          <option value="7">7x7</option>
-          <option value="8">8x8</option>
-          <option value="9">9x9</option>
         </select>
       </div>
     </div>
-    <div id="instructions">
-      <h3>Instructions</h3>
-      <p>Move tiles in grid into ascending order. To move a tile you can click on it or use your arrow keys.</p>
+    <div>
+      <div id="instructions">
+        <h3>Instructions</h3>
+        <p>Move tiles in grid into ascending order. To move a tile you can click on it or use your arrow keys.</p>
+      </div>
+      <div id="leaderBoardDiv">
+        <table id="leaderBoard">
+          <thead>
+            <tr>
+              <th onclick="w3.sortHTML('#leaderBoard', '.item', 'td:nth-child(1)')" style="cursor:pointer">Size</th>
+              <th onclick="w3.sortHTML('#leaderBoard', '.item', 'td:nth-child(2)')" style="cursor:pointer">Move Count</th>
+              <th onclick="w3.sortHTML('#leaderBoard', '.item', 'td:nth-child(3)')" style="cursor:pointer"> Time</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
   </div>
+  <script src="lib/w3.js"></script>
   <script src="js/const.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/game.js"></script>
   <script src="js/board.js"></script>
   <script src="js/moveCount.js"></script>
   <script src="js/timer.js"></script>
   <script src="js/handler.js"></script>
   <script src="js/view.js"></script>
   <script src="js/util.js"></script>
+  <script src="js/leaderBoard.js"></script>
 </body>
 </html>
