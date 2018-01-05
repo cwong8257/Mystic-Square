@@ -76,7 +76,6 @@ th, td {
 }
 
 @media only screen and (max-width: 900px) {
-<<<<<<< HEAD
   #title {
     font-family: Mystic-Singler, Charcoal, sans-serif;
     font-size: 40px;
@@ -88,9 +87,6 @@ th, td {
     font-family: Courier New, Courier, monospace;
     font-size: 16px;
   }
-=======
-
->>>>>>> e694b479b270e6ce9067ef400294c48810dd2f63
   .center {
     display: flex;
     flex-direction: column;
