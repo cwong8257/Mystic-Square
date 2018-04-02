@@ -65,12 +65,13 @@ body {
 .label {
   font-size: 2rem;
   font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
 .stats--stat {
   text-align: center;
-  margin: 0 1rem;
-  padding: 1rem;
+  margin: 0 2rem;
+  padding: 1.3rem;
   width: 12rem;
   background-color: #808080c9;
   animation-duration: 1s;
@@ -86,8 +87,7 @@ body {
 }
 
 .input {
-  padding: 1rem 1.5rem;
-  font-size: 1.5rem;
+  padding: 0.5rem;
 }
 
 .info {
@@ -108,13 +108,13 @@ body {
 
 .leaderboard--table {
   font-size: 1em;
-  margin: auto;
+  width: 100%;
 }
 
 .leaderboard--table th,
 td {
-  width: 33%;
-  padding: 1rem 3rem;
+  width: auto;
+  padding: 1rem 2rem 1rem 0;
   text-align: left;
 }
 
@@ -124,9 +124,9 @@ td {
   }
 
   .title {
-    font-size: 10rem;
+    font-size: 8rem;
     text-align: center;
-    letter-spacing: 1rem;
+    letter-spacing: 1.5rem;
   }
 
   .select-size {
@@ -146,5 +146,9 @@ td {
   .leaderboard {
     margin: auto;
     width: 60rem;
+  }
+
+  .leaderboard--table {
+    width: 100%;
   }
 }
