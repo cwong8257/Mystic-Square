@@ -43,12 +43,6 @@ body {
   margin-bottom: 2rem;
 }
 
-th,
-td {
-  padding: 1rem 3rem;
-  text-align: left;
-}
-
 .content {
   margin: 1rem;
 }
@@ -98,21 +92,29 @@ td {
 .info {
   display: flex;
   flex-direction: column;
-  font-size: 1.3rem;
+  font-size: 1.6rem;
+  justify-content: center;
 }
 
 .instructions {
   margin-bottom: 4rem;
+  text-align: justify;
 }
 
 .leaderboard {
-  max-height: 1rem;
   font-family: Courier New, Courier, monospace;
 }
 
 .leaderboard--table {
-  overflow-y: scroll;
   font-size: 1em;
+  margin: auto;
+}
+
+.leaderboard--table th,
+td {
+  width: 33%;
+  padding: 1rem 3rem;
+  text-align: left;
 }
 
 @media only screen and (min-device-width: 768px) {
@@ -130,18 +132,17 @@ td {
   }
 
   .info {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
     font-size: 2rem;
   }
 
   .instructions {
-    width: 45%;
-    margin-bottom: 0;
+    margin: auto;
+    margin-bottom: 4rem;
+    width: 60rem;
   }
 
   .leaderboard {
-    width: 45%;
+    margin: auto;
+    width: 60rem;
   }
 }
