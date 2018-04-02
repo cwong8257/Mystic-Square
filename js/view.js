@@ -138,8 +138,8 @@ var view = (function() {
   }
 
   function highlightStats() {
-    moveCountDiv.style.animationName = 'example';
-    timerDiv.style.animationName = 'example';
+    moveCountDiv.style.animationName = 'flash';
+    timerDiv.style.animationName = 'flash';
   }
 
   function unHighlightStats() {
