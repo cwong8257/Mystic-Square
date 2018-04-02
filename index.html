@@ -1,6 +1,7 @@
 <!doctype html>
 
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>Mystic Square</title>
@@ -11,15 +12,20 @@
 <body>
   <div class="center">
     <div>
-      <div class="center">
+      <div class="title">
         <span id="title">MYSTIC SQUARE</span>
       </div>
       <div class="center">
-        <div id="moveCountDiv" class="stat">
-          <p class="label center-text">Moves</p><p id="moveCount" class="center-text">0</p>
+        <div class="stats" id="moveCountDiv">
+          <p class="label">Moves</p>
+          <p id="moveCount">0</p>
         </div>
-        <div id="timerDiv" class="stat">
-          <p class="label center-text">Time</p><p class="center-text"><span id="minutes">00</span>:<span id="seconds">00</span></p>
+        <div class="stats" id="timerDiv">
+          <p class="label">Time</p>
+          <p>
+            <span id="minutes">00</span>:
+            <span id="seconds">00</span>
+          </p>
         </div>
       </div>
       <canvas id="board"></canvas>
@@ -33,7 +39,7 @@
       </div>
     </div>
     <div>
-      <div id="instructions">
+      <div class="instructions">
         <h2>Instructions</h2>
         <p>Move tiles in grid into ascending order. To move a tile you can click on it or use your arrow keys.</p>
       </div>
@@ -64,4 +70,5 @@
   <script src="js/util.js"></script>
   <script src="js/leaderBoard.js"></script>
 </body>
+
 </html>
