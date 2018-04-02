@@ -16,11 +16,11 @@
         <h1 class="title">MYSTIC SQUARE</h1>
       </header>
       <div class="stats">
-        <div class="stats-stat" id="moveCountDiv">
+        <div class="stats--stat" id="moveCountDiv">
           <p class="label">Moves</p>
           <p id="moveCount">0</p>
         </div>
-        <div class="stats-stat" id="timerDiv">
+        <div class="stats--stat" id="timerDiv">
           <p class="label">Time</p>
           <p>
             <span id="minutes">00</span>:
@@ -28,7 +28,9 @@
           </p>
         </div>
       </div>
-      <canvas id="board"></canvas>
+      <div class="canvas">
+        <canvas id="board"></canvas>
+      </div>
       <div class="select-size">
         <select class="input" id="selectSize" onchange="game.getReady()">
           <option value="3">3x3</option>

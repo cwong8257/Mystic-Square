@@ -37,9 +37,10 @@ body {
   background-size: cover;
 }
 
-canvas {
-  margin: 0 auto 2rem auto;
-  display: block;
+.canvas {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
 }
 
 th,
@@ -69,7 +70,7 @@ td {
   font-size: 2rem;
 }
 
-.stats-stat {
+.stats--stat {
   text-align: center;
   margin: 0 1rem;
   padding: 1rem;
