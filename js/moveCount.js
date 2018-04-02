@@ -19,5 +19,5 @@ var moveCount = (function() {
     getMoveCount: getMoveCount,
     resetMoveCount: resetMoveCount,
     incrementMoveCount: incrementMoveCount
-  }
+  };
 })();

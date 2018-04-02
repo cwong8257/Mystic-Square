@@ -7,14 +7,14 @@ var board = (function() {
     dimension = dim;
 
     let temp;
-    
+
     for (let i = 0; i < dimension; i++) {
       tiles[i] = [];
       for (let j = 0; j < dimension; j++) {
-        tiles[i][j] = dimension * dimension - 1 - j - (i * dimension);
-      }                   
+        tiles[i][j] = dimension * dimension - 1 - j - i * dimension;
+      }
     }
-    
+
     if (dimension % 2 == 0) {
       temp = tiles[dimension - 1][dimension - 2];
       tiles[dimension - 1][dimension - 2] = tiles[dimension - 1][dimension - 3];
@@ -22,16 +22,18 @@ var board = (function() {
     }
   }
 
-  function buildBoard() {
-
-  }
+  function buildBoard() {}
 
   function getTile(x, y) {
     for (let i = 0; i < dimension; i++) {
       for (let j = 0; j < dimension; j++) {
-        if (y >= tileMap[i][j].y && y <= tileMap[i][j].y + TILE_LENGTH &&
-          x >= tileMap[i][j].x && x <= tileMap[i][j].x + TILE_LENGTH) {
-            return tileMap[i][j];
+        if (
+          y >= tileMap[i][j].y &&
+          y <= tileMap[i][j].y + TILE_LENGTH &&
+          x >= tileMap[i][j].x &&
+          x <= tileMap[i][j].x + TILE_LENGTH
+        ) {
+          return tileMap[i][j];
         }
       }
     }
@@ -53,7 +55,7 @@ var board = (function() {
     let tileRow = currentTile.row;
     let tileCol = currentTile.col;
     let temp;
-    
+
     temp = tiles[zeroRow][zeroCol];
     tiles[zeroRow][zeroCol] = tiles[tileRow][tileCol];
     tiles[tileRow][tileCol] = temp;
@@ -68,12 +70,13 @@ var board = (function() {
     let zeroCol = zeroTile.col;
     let tileRow = currentTile.row;
     let tileCol = currentTile.col;
-    
-    if ((zeroRow === tileRow && Math.abs(zeroCol - tileCol) === 1) ||
-    (Math.abs(zeroRow - tileRow) === 1 && zeroCol === tileCol)) {
+
+    if (
+      (zeroRow === tileRow && Math.abs(zeroCol - tileCol) === 1) ||
+      (Math.abs(zeroRow - tileRow) === 1 && zeroCol === tileCol)
+    ) {
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }

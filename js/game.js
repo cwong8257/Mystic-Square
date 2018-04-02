@@ -12,7 +12,7 @@ var game = (function() {
     moveCount.resetMoveCount();
     timer.startTimer();
   }
-  
+
   function getReady() {
     board.init(sizeSelector.value);
     moveCount.resetMoveCount();
@@ -49,8 +49,13 @@ var game = (function() {
     let position = util.getMousePosition(event);
     let x = position.x;
     let y = position.y;
-    
-    if (x > (canvas.width - width) / 2 && x < (canvas.width + width) / 2 && y > (canvas.height - height) / 1.3 && y < (canvas.height + height) / 1.3) {
+
+    if (
+      x > (canvas.width - width) / 2 &&
+      x < (canvas.width + width) / 2 &&
+      y > (canvas.height - height) / 1.3 &&
+      y < (canvas.height + height) / 1.3
+    ) {
       game.startGame();
     }
   }
@@ -61,5 +66,5 @@ var game = (function() {
     checkWin: checkWin,
     won: won,
     playAgain: playAgain
-  }
+  };
 })();

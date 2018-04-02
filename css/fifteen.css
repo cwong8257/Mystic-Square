@@ -1,6 +1,6 @@
 @keyframes example {
   0% {
-    background-color: rgba(158, 169, 255, 0.521);
+    background-color: rgba(158, 169, 255, 0.5);
   }
   100% {
     background-color: green;
@@ -38,30 +38,41 @@ body {
 }
 
 canvas {
-  margin: 0px auto 20px auto;
+  margin: 0 auto 2rem auto;
   display: block;
 }
 
 th,
 td {
-  padding: 10px 30px 10px 30px;
+  padding: 1rem 3rem;
   text-align: left;
 }
-#title {
-  font-family: Mystic-Singler, Charcoal, sans-serif;
-  font-size: 80px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+
+.content {
+  margin: 1rem;
 }
-.instructions {
-  width: 400px;
-  font-size: 20px;
-  margin-left: 20px;
+
+.title {
+  font-family: Mystic-Singler, Charcoal, sans-serif;
+  font-size: 5rem;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
 .stats {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.label {
+  font-size: 2rem;
+}
+
+.stats-stat {
   text-align: center;
-  margin-left: 1rem;
+  margin: 0 1rem;
+  padding: 1rem;
   font-family: 'Comic Sans MS', cursive, sans-serif;
   font-weight: 700;
   font-size: 1.4rem;
@@ -71,47 +82,65 @@ td {
   animation-iteration-count: infinite;
   animation-direction: alternate;
 }
-#leaderBoardDiv {
-  height: 400px;
-  width: 400px;
-  font-family: Courier New, Courier, monospace;
-  font-size: 20px;
-  margin-left: 20px;
-}
-#leaderBoard {
-  overflow-y: auto;
-  font-size: 16px;
-}
-.center {
+
+.select-size {
   display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: center;
+  margin-bottom: 4rem;
 }
 
-.label {
-  font-size: 2rem;
+.input {
+  padding: 1rem 1.5rem;
+  font-size: 1.5rem;
 }
 
-@media only screen and (max-width: 900px) {
-  #title {
-    font-family: Mystic-Singler, Charcoal, sans-serif;
-    font-size: 4rem;
-    margin-top: 20px;
-    margin-bottom: 20px;
+.info {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.3rem;
+}
+
+.instructions {
+  margin-bottom: 4rem;
+}
+
+.leaderboard {
+  max-height: 1rem;
+  font-family: Courier New, Courier, monospace;
+}
+
+.leaderboard--table {
+  overflow-y: scroll;
+  font-size: 1em;
+}
+
+@media only screen and (min-device-width: 768px) {
+  .content {
+    margin: 2rem;
   }
-  #instructions {
-    width: auto;
-    margin: 0px;
+
+  .title {
+    font-size: 10rem;
+    text-align: center;
   }
-  #leaderBoardDiv {
-    width: auto;
-    margin: 0px;
+
+  .select-size {
+    margin-bottom: 5rem;
   }
-  .center {
+
+  .info {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 2rem;
+  }
+
+  .instructions {
+    width: 45%;
+    margin-bottom: 0;
+  }
+
+  .leaderboard {
+    width: 45%;
   }
 }

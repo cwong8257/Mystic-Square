@@ -14,24 +14,21 @@ var util = (function() {
     let count = 0;
     for (let i = 0; i < dimension * dimension - 1; i++) {
       for (let j = i + 1; j < dimension * dimension; j++) {
-        if (arr[j] && arr[i] && arr[i] > arr[j])
-          count++;
+        if (arr[j] && arr[i] && arr[i] > arr[j]) count++;
       }
     }
     return count;
   }
 
   function padding(val) {
-    let valString = val + "";
+    let valString = val + '';
 
     if (valString.length < 2) {
-      return "0" + valString;
-    }
-    else {
+      return '0' + valString;
+    } else {
       return valString;
     }
   }
-
 
   return {
     getMousePosition: getMousePosition,

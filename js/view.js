@@ -5,10 +5,10 @@ var view = (function() {
     ctx.globalAlpha = BOARD_OPACITY;
     ctx.fillStyle = BOARD_COLOR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.font = "40px Courier New";
+    ctx.font = '40px Courier New';
     ctx.fillStyle = 'white';
-    ctx.textAlign = "center"; 
-    ctx.fillText("Play", canvas.width / 2, canvas.height / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText('Play', canvas.width / 2, canvas.height / 2);
 
     buildLeaderBoard();
   }
@@ -22,7 +22,7 @@ var view = (function() {
     ctx.shadowOffsetY = 4;
     ctx.fillRect(pos.x + 5, pos.y + 5, TILE_LENGTH * 0.9, TILE_LENGTH * 0.9);
     ctx.fillStyle = 'white';
-    ctx.font = "20px Verdana";
+    ctx.font = '20px Verdana';
     ctx.fillText(map[i][j], pos.textx + 5, pos.texty);
   }
 
@@ -32,8 +32,8 @@ var view = (function() {
     let pos = {
       x: 0,
       y: 0,
-      textx: (TILE_LENGTH / 2) - 5,
-      texty: (TILE_LENGTH / 2) + 5
+      textx: TILE_LENGTH / 2 - 5,
+      texty: TILE_LENGTH / 2 + 5
     };
     for (let i = 0; i < map.length; i++) {
       tileMap[i] = [];
@@ -55,8 +55,8 @@ var view = (function() {
       }
       pos.x = 0;
       pos.y += TILE_LENGTH;
-      pos.textx = (TILE_LENGTH / 2) - 5;
-      pos.texty += TILE_LENGTH; 
+      pos.textx = TILE_LENGTH / 2 - 5;
+      pos.texty += TILE_LENGTH;
     }
   }
 
@@ -87,12 +87,12 @@ var view = (function() {
       let cell1 = row.insertCell(0);
       let cell2 = row.insertCell(1);
       let cell3 = row.insertCell(2);
-      
-      row.classList.add("item");
+
+      row.classList.add('item');
       cell1.innerHTML = score.size;
       cell2.innerHTML = score.moveCount;
       cell3.innerHTML = score.time;
-    })
+    });
   }
 
   function clearLeaderBoard() {
@@ -108,13 +108,13 @@ var view = (function() {
     view.clearBoard();
     ctx.font = '40px Courier New';
     ctx.fillStyle = 'white';
-    ctx.textAlign = 'center'; 
-    ctx.fillText("You Win!", canvas.width / 2, canvas.height / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText('You Win!', canvas.width / 2, canvas.height / 2);
     ctx.strokeRect((canvas.width - width) / 2, (canvas.height - height) / 1.3, width, height);
     ctx.fillRect((canvas.width - width) / 2, (canvas.height - height) / 1.3, width, height);
     ctx.font = '30px Courier New';
     ctx.fillStyle = 'black';
-    ctx.fillText("Play again", canvas.width / 2, canvas.height / 1.3);
+    ctx.fillText('Play again', canvas.width / 2, canvas.height / 1.3);
 
     view.setUpPlayAgainListener(width, height);
   }
@@ -128,8 +128,8 @@ var view = (function() {
   }
 
   function resetTimer() {
-    minutesLabel.innerHTML = "00";
-    secondsLabel.innerHTML = "00";
+    minutesLabel.innerHTML = '00';
+    secondsLabel.innerHTML = '00';
   }
 
   function setTimer(seconds) {
@@ -138,39 +138,39 @@ var view = (function() {
   }
 
   function highlightStats() {
-    moveCountDiv.style.animationName = "example";
-    timerDiv.style.animationName = "example";
+    moveCountDiv.style.animationName = 'example';
+    timerDiv.style.animationName = 'example';
   }
 
   function unHighlightStats() {
-    moveCountDiv.style.animationName = "";
-    timerDiv.style.animationName = "";
+    moveCountDiv.style.animationName = '';
+    timerDiv.style.animationName = '';
   }
 
   function setUpGameEventListeners() {
-    canvas.addEventListener("mousedown", handler.clickMove);
-    document.addEventListener("keydown", handler.keyMove);
+    canvas.addEventListener('mousedown', handler.clickMove);
+    document.addEventListener('keydown', handler.keyMove);
   }
 
   function removeGameEventListeners() {
-    canvas.removeEventListener("mousedown", handler.clickMove);
-    document.removeEventListener("keydown", handler.keyMove);
+    canvas.removeEventListener('mousedown', handler.clickMove);
+    document.removeEventListener('keydown', handler.keyMove);
   }
 
   function setUpPlayAgainListener() {
-    canvas.addEventListener("mousedown", handler.playAgain);
+    canvas.addEventListener('mousedown', handler.playAgain);
   }
 
   function removePlayAgainListener() {
-    canvas.removeEventListener("mousedown", handler.playAgain);
+    canvas.removeEventListener('mousedown', handler.playAgain);
   }
 
   function setUpClickPlayListener() {
-    canvas.addEventListener("mousedown", handler.clickPlay);
+    canvas.addEventListener('mousedown', handler.clickPlay);
   }
 
   function removeClickPlayListener() {
-    canvas.removeEventListener("mousedown", handler.clickPlay);
+    canvas.removeEventListener('mousedown', handler.clickPlay);
   }
 
   return {

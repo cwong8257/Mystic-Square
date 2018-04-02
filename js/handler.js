@@ -25,7 +25,7 @@ var handler = (function() {
     let zeroTile = board.getZeroTile();
 
     switch (event.key) {
-      case "ArrowDown":
+      case 'ArrowDown':
         if (zeroTile.row - 1 >= 0) {
           let currentTile = board.tileMap[zeroTile.row - 1][zeroTile.col];
           board.switchTile(currentTile, zeroTile);
@@ -37,7 +37,7 @@ var handler = (function() {
           }
         }
         break;
-      case "ArrowUp":
+      case 'ArrowUp':
         if (zeroTile.row + 1 < dimension) {
           let currentTile = board.tileMap[zeroTile.row + 1][zeroTile.col];
           board.switchTile(currentTile, zeroTile);
@@ -49,7 +49,7 @@ var handler = (function() {
           }
         }
         break;
-      case "ArrowLeft":
+      case 'ArrowLeft':
         if (zeroTile.col + 1 < dimension) {
           let currentTile = board.tileMap[zeroTile.row][zeroTile.col + 1];
           board.switchTile(currentTile, zeroTile);
@@ -61,7 +61,7 @@ var handler = (function() {
           }
         }
         break;
-      case "ArrowRight":
+      case 'ArrowRight':
         if (zeroTile.col - 1 >= 0) {
           let currentTile = board.tileMap[zeroTile.row][zeroTile.col - 1];
           board.switchTile(currentTile, zeroTile);
@@ -89,7 +89,6 @@ var handler = (function() {
   function clickPlay(event) {
     game.startGame();
   }
-
 
   return {
     clickMove: clickMove,

@@ -8,7 +8,7 @@ var leaderBoard = (function() {
       size: size,
       moveCount: moveCount,
       time: time
-    }
+    };
     oldItems.push(newItem);
 
     localStorage.setItem('msLeaderBoard', JSON.stringify(oldItems));

@@ -10,17 +10,17 @@
 </head>
 
 <body>
-  <div class="center">
+  <div class="content">
     <div>
-      <div class="title">
-        <span id="title">MYSTIC SQUARE</span>
-      </div>
-      <div class="center">
-        <div class="stats" id="moveCountDiv">
+      <header class="header">
+        <h1 class="title">MYSTIC SQUARE</h1>
+      </header>
+      <div class="stats">
+        <div class="stats-stat" id="moveCountDiv">
           <p class="label">Moves</p>
           <p id="moveCount">0</p>
         </div>
-        <div class="stats" id="timerDiv">
+        <div class="stats-stat" id="timerDiv">
           <p class="label">Time</p>
           <p>
             <span id="minutes">00</span>:
@@ -29,8 +29,8 @@
         </div>
       </div>
       <canvas id="board"></canvas>
-      <div class="center">
-        <select id="selectSize" onchange="game.getReady()">
+      <div class="select-size">
+        <select class="input" id="selectSize" onchange="game.getReady()">
           <option value="3">3x3</option>
           <option selected="selected" value="4">4x4</option>
           <option value="5">5x5</option>
@@ -38,14 +38,14 @@
         </select>
       </div>
     </div>
-    <div>
+    <div class="info">
       <div class="instructions">
         <h2>Instructions</h2>
         <p>Move tiles in grid into ascending order. To move a tile you can click on it or use your arrow keys.</p>
       </div>
-      <div id="leaderBoardDiv">
+      <div class="leaderboard">
         <h2>Leaderboard</h2>
-        <table id="leaderBoard">
+        <table class="leaderboard--table" id="leaderBoard">
           <thead>
             <tr>
               <th onclick="w3.sortHTML('#leaderBoard', '.item', 'td:nth-child(1)')" style="cursor:pointer">Size</th>
@@ -58,6 +58,7 @@
       </div>
     </div>
   </div>
+
   <script src="lib/w3.js"></script>
   <script src="js/const.js"></script>
   <script src="js/app.js"></script>
