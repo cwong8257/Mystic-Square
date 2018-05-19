@@ -1,0 +1,50 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#game {
+  width: 32rem;
+  text-align: center;
+}
+
+#board {
+  height: 30rem;
+  width: 30rem;
+  margin: auto;
+  border: 0.1rem solid black;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  border-radius: 1rem;
+}
+
+.tile {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 6.5rem;
+  height: 6.5rem;
+  border: 0.1rem solid black;
+  margin: 0.2rem;
+  border-radius: 1rem;
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                    supported by Chrome and Opera */
+}
+
+.empty {
+  opacity: 0;
+}
+
+.tile:hover {
+  background: lightcoral;
+}

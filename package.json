@@ -1,15 +1,22 @@
 {
-  "name": "mystic_square",
+  "name": "mystic-square",
   "version": "1.0.0",
   "description": "",
-  "main": "index.html",
+  "main": "input.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/server.js"
+    "dev-server": "webpack-dev-server --mode development",
+    "build": "webpack --mode production"
   },
-  "author": "Christopher Wong",
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3"
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.3",
+    "webpack-dev-server": "^3.1.4"
   }
 }

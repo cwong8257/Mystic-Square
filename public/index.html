@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Mystic Square</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css">
+  <link href="/styles/styles.css" rel="stylesheet">
+  <link href="/images/favicon.png" rel="icon">
+</head>
+
+<body>
+  <div class="wrapper">
+    <div id="game">
+      <h1 id="title">Mystic Square</h1>
+      <div id="header">
+        <div>
+          <p>Moves</p>
+          <span id="move-count"></span>
+        </div>
+        <div>
+          <p>Time</p>
+          <span id="time"></span>
+        </div>
+      </div>
+
+      <button id="reset">Reset</button>
+      <div id="board"></div>
+      <p>Select board size:</p>
+      <select id="select">
+        <option value="3">3</option>
+        <option value="4" selected>4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+      </select>
+
+      <section class="instructions">
+        <h2>Instructions</h2>
+        <p>Move tiles in grid to order them in ascending order. To move a tile you can click on it or use your arrow keys. Press
+          ESC to pause the game</p>
+      </section>
+    </div>
+  </div>
+
+  <script src="/scripts/bundle.js"></script>
+</body>
+
+</html>
