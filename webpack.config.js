@@ -4,7 +4,7 @@ module.exports = {
   entry: ['babel-polyfill', './src/index.js'],
   output: {
     path: path.resolve(__dirname, 'public/scripts'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
   },
   module: {
     rules: [
@@ -15,15 +15,15 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['env'],
-            plugins: ['transform-object-rest-spread']
-          }
-        }
-      }
-    ]
+            plugins: ['transform-object-rest-spread'],
+          },
+        },
+      },
+    ],
   },
   devServer: {
     contentBase: path.resolve(__dirname, 'public'),
-    publicPath: '/scripts/'
+    publicPath: '/scripts/',
   },
-  devtool: 'source-map'
+  devtool: 'source-map',
 };

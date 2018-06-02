@@ -13,7 +13,7 @@ class Game {
 
     for (let i = 0; i < dimensions; i++) {
       for (let j = 0; j < dimensions; j++) {
-        if (board.tiles[i][j].value != board.winningBoard[i][j]) {
+        if (board.tiles[i][j].value !== board.winningBoard[i][j]) {
           return false;
         }
       }
@@ -26,7 +26,11 @@ class Game {
       return;
     }
 
-    this.board.move(direction) && this.moveCount++;
+    const didMove = this.board.move(direction);
+
+    if (didMove) {
+      this.moveCount++;
+    }
 
     if (this.isWon()) {
       this.status = 'finished';

@@ -2,13 +2,13 @@ import Tile from './tile';
 
 class Board {
   constructor(dimensions) {
-    this.tiles = this.buildBoard(dimensions);
-    this.winningBoard = this.buildWinningBoard(dimensions);
+    this.tiles = Board.buildBoard(dimensions);
+    this.winningBoard = Board.buildWinningBoard(dimensions);
     this.dimensions = dimensions;
   }
 
-  buildBoard(dimensions) {
-    let tiles = [];
+  static buildBoard(dimensions) {
+    const tiles = [];
 
     for (let row = 0; row < dimensions; row++) {
       tiles[row] = [];
@@ -18,8 +18,8 @@ class Board {
       }
     }
 
-    if (dimensions % 2 == 0) {
-      let temp = tiles[dimensions - 1][dimensions - 2].value;
+    if (dimensions % 2 === 0) {
+      const temp = tiles[dimensions - 1][dimensions - 2].value;
       tiles[dimensions - 1][dimensions - 2].value = tiles[dimensions - 1][dimensions - 3].value;
       tiles[dimensions - 1][dimensions - 3].value = temp;
     }
@@ -41,6 +41,7 @@ class Board {
         }
       }
     }
+    throw new Error('Something went wrong');
   }
 
   switchTile(currentTile, zeroTile) {
@@ -58,10 +59,10 @@ class Board {
   canMove(currentTile) {
     const zeroTile = this.getZeroTile();
 
-    let zeroRow = zeroTile.row;
-    let zeroCol = zeroTile.col;
-    let tileRow = currentTile.row;
-    let tileCol = currentTile.col;
+    const zeroRow = zeroTile.row;
+    const zeroCol = zeroTile.col;
+    const tileRow = currentTile.row;
+    const tileCol = currentTile.col;
 
     if (zeroRow === tileRow && zeroCol - tileCol === 1) {
       return 'right';
@@ -71,45 +72,40 @@ class Board {
       return 'down';
     } else if (zeroCol === tileCol && zeroRow - tileRow === -1) {
       return 'up';
-    } else {
-      return false;
     }
-
-    return (
-      (zeroRow === tileRow && Math.abs(zeroCol - tileCol) === 1) ||
-      (Math.abs(zeroRow - tileRow) === 1 && zeroCol === tileCol)
-    );
+    return false;
   }
 
   move(direction) {
     const zeroTile = this.getZeroTile();
+    const { row: zeroTileRow, col: zeroTileCol } = zeroTile;
     const { dimensions } = this;
 
     switch (direction) {
       case 'up':
-        if (zeroTile.row + 1 < dimensions) {
-          let currentTile = this.tiles[zeroTile.row + 1][zeroTile.col];
+        if (zeroTileRow + 1 < dimensions) {
+          const currentTile = this.tiles[zeroTileRow + 1][zeroTileCol];
           this.switchTile(currentTile, zeroTile);
           return true;
         }
         break;
       case 'down':
-        if (zeroTile.row - 1 >= 0) {
-          let currentTile = this.tiles[zeroTile.row - 1][zeroTile.col];
+        if (zeroTileRow - 1 >= 0) {
+          const currentTile = this.tiles[zeroTileRow - 1][zeroTileCol];
           this.switchTile(currentTile, zeroTile);
           return true;
         }
         break;
       case 'left':
-        if (zeroTile.col + 1 < dimensions) {
-          let currentTile = this.tiles[zeroTile.row][zeroTile.col + 1];
+        if (zeroTileCol + 1 < dimensions) {
+          const currentTile = this.tiles[zeroTileRow][zeroTileCol + 1];
           this.switchTile(currentTile, zeroTile);
           return true;
         }
         break;
       case 'right':
-        if (zeroTile.col - 1 >= 0) {
-          let currentTile = this.tiles[zeroTile.row][zeroTile.col - 1];
+        if (zeroTileCol - 1 >= 0) {
+          const currentTile = this.tiles[zeroTileRow][zeroTileCol - 1];
           this.switchTile(currentTile, zeroTile);
           return true;
         }
@@ -117,16 +113,17 @@ class Board {
       default:
         return false;
     }
+    return false;
   }
 
-  buildWinningBoard(dimensions) {
-    let winningBoard = [];
+  static buildWinningBoard(dimensions) {
+    const winningBoard = [];
 
     for (let i = 0; i < dimensions; i++) {
       winningBoard[i] = [];
       for (let j = 0; j < dimensions; j++) {
-        let num = i * dimensions + j + 1;
-        winningBoard[i][j] = num;
+        const value = i * dimensions + j + 1;
+        winningBoard[i][j] = value;
       }
     }
     winningBoard[dimensions - 1][dimensions - 1] = 0;

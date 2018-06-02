@@ -1,8 +1,11 @@
 import Game from './game';
-import { render } from './views';
+import render from './views';
 
 let game = new Game(4);
 render(game);
+
+const selectEl = document.querySelector('#select');
+const resetEl = document.querySelector('#reset');
 
 document.addEventListener('keyup', e => {
   switch (e.key) {
@@ -24,15 +27,12 @@ document.addEventListener('keyup', e => {
   render(game);
 });
 
-const selectEl = document.querySelector('#select');
-const resetEl = document.querySelector('#reset');
-
 selectEl.addEventListener('change', e => {
   game = new Game(e.target.value);
   render(game);
 });
 
-resetEl.addEventListener('click', e => {
+resetEl.addEventListener('click', () => {
   game = new Game(selectEl.value);
   render(game);
 });
