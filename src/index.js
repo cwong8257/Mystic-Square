@@ -1,6 +1,8 @@
 import Game from './game';
 import render from './views';
 
+import './styles/main.scss';
+
 let game = new Game(4);
 render(game);
 
