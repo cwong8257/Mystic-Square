@@ -1,71 +1,11 @@
-*,
-*::after,
-*::before {
-  margin: 0;
-  padding: 0;
-  box-sizing: inherit;
-}
+@import 'abstracts/variables';
 
-html {
-  font-size: 62.5%;
-}
+@import 'base/base';
+@import 'base/animations';
+@import 'base/typography';
 
-body {
-  box-sizing: border-box;
-  padding: 3rem;
-  font-size: 1.6rem;
-}
-
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-#game {
-  width: 35rem;
-  text-align: center;
-}
-
-#board {
-  display: flex;
-  flex-wrap: wrap;
-  height: 30rem;
-  width: 30rem;
-  margin: auto;
-  padding: 1rem;
-  border: 0.1rem solid black;
-  margin-bottom: 2rem;
-  border-radius: 1rem;
-}
-
-.tile {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border: 0.1rem solid black;
-  border-radius: 1rem;
-  transition: all 0.2s ease-out;
-  cursor: pointer;
-
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                    supported by Chrome and Opera */
-}
-
-.empty {
-  opacity: 0;
-}
-
-.instructions {
-  text-align: left;
-}
-
-.tile:hover {
-  background: lightcoral;
-}
+@import 'components/board';
+@import 'components/button';
+@import 'components/header';
+@import 'components/instructions';
+@import 'components/select';

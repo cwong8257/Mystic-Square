@@ -1,0 +1,21 @@
+%heading {
+  font-family: $font-primary;
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.heading-1 {
+  @extend %heading;
+  font-size: 6rem;
+}
+
+.heading-2 {
+  @extend %heading;
+  font-size: 4rem;
+}
+
+.heading-3 {
+  @extend %heading;
+  font-size: 3rem;
+}

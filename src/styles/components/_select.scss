@@ -1,0 +1,22 @@
+.select {
+  justify-self: center;
+  text-align: center;
+
+  &__text {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  &__input {
+    padding: 0.5rem 2rem;
+    appearance: none;
+    font-size: 1.6rem;
+    font-family: inherit;
+    color: inherit;
+
+    &:focus,
+    &:active {
+      outline: none;
+    }
+  }
+}

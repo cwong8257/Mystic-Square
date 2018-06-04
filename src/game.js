@@ -1,10 +1,14 @@
 import Board from './board';
+import { updateTimeDOM } from './views';
 
 class Game {
-  constructor(dimensions) {
-    this.board = new Board(dimensions);
+  constructor() {
+    this.board = null;
     this.moveCount = 0;
-    this.status = 'playing';
+    // Enum: 'reset', 'paused', 'playing', 'finished'
+    this.status = 'reset';
+    this.time = 0;
+    this.timer = null;
   }
 
   isWon() {
@@ -34,13 +38,35 @@ class Game {
 
     if (this.isWon()) {
       this.status = 'finished';
+      clearInterval(this.timer);
     }
   }
 
-  reset(dimensions) {
+  start(dimensions) {
     this.board = new Board(dimensions);
-    this.moveCount = 0;
     this.status = 'playing';
+    this.timer = setInterval(() => {
+      if (this.status === 'playing') {
+        this.time++;
+        updateTimeDOM(this.time);
+      }
+    }, 1000);
+  }
+
+  pause() {
+    this.status = 'paused';
+  }
+
+  unpause() {
+    this.status = 'playing';
+  }
+
+  reset() {
+    this.board = null;
+    this.moveCount = 0;
+    this.status = 'reset';
+    this.time = 0;
+    clearInterval(this.timer);
   }
 }
 export { Game as default };

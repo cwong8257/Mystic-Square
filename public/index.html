@@ -6,29 +6,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Mystic Square</title>
+  <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
   <link href="/dist/main.css" rel="stylesheet">
   <link href="/images/favicon.png" rel="icon">
 </head>
 
 <body>
-  <div class="wrapper">
-    <div id="game">
-      <h1 id="title">Mystic Square</h1>
-      <div id="header">
-        <div>
-          <p>Moves</p>
-          <span id="move-count"></span>
-        </div>
-        <div>
-          <p>Time</p>
-          <span id="time"></span>
-        </div>
+  <div class="container">
+    <header class="header">
+      <h1 class="heading-1 header__title">Mystic Square</h1>
+      <div class="moves" id="moves">
+        <p class="heading-3 moves__text">Moves</p>
+        <span class="moves__count" id="moves__count"></span>
       </div>
+      <div class="time" id="time">
+        <p class="heading-3 time__text">Time</p>
+        <span class="time__count" id="time__count"></span>
+      </div>
+      <button class="btn" id="reset-button">Reset</button>
+      <button class="btn" id="play-button">Play</button>
+    </header>
 
-      <button id="reset">Reset</button>
-      <div id="board"></div>
-      <p>Select board size:</p>
-      <select id="select">
+    <div class="board">
+      <div class="board__overlay" id="board__overlay">
+        play
+      </div>
+      <div class="board__content" id="board__content"></div>
+    </div>
+
+    <div class="select">
+      <p class="select__text">Select board size:</p>
+
+      <select class="select__input" id="select">
         <option value="3">3</option>
         <option value="4" selected>4</option>
         <option value="5">5</option>
@@ -37,13 +46,13 @@
         <option value="8">8</option>
         <option value="9">9</option>
       </select>
-
-      <section class="instructions">
-        <h2>Instructions</h2>
-        <p>Move tiles in grid to order them in ascending order. To move a tile you can click on it or use your arrow keys. Press
-          ESC to pause the game</p>
-      </section>
     </div>
+
+    <section class="instructions">
+      <h2 class="heading-2 instructions__heading">Instructions</h2>
+      <p class="instructions__text">Move tiles in grid to order them in ascending order. To move a tile you can click on it or use your arrow keys. Press
+        ESC to pause the game</p>
+    </section>
   </div>
 
   <script src="/dist/bundle.js"></script>

@@ -3,38 +3,82 @@ import render from './views';
 
 import './styles/main.scss';
 
-let game = new Game(4);
+const game = new Game();
 render(game);
 
+const resetEl = document.querySelector('#reset-button');
+const playEl = document.querySelector('#play-button');
 const selectEl = document.querySelector('#select');
-const resetEl = document.querySelector('#reset');
+const boardOverlayEl = document.querySelector('#board__overlay');
+const movesEl = document.querySelector('#moves');
+const timeEl = document.querySelector('#time');
 
-document.addEventListener('keyup', e => {
+const handleTogglePlay = () => {
+  const { status } = game;
+
+  if (status === 'reset') {
+    game.start(selectEl.value);
+    playEl.innerText = 'pause';
+    boardOverlayEl.style.display = 'none';
+  } else if (status === 'playing') {
+    game.pause();
+    boardOverlayEl.style.display = 'flex';
+    playEl.innerText = 'play';
+  } else if (status === 'paused') {
+    game.unpause();
+    boardOverlayEl.style.display = 'none';
+    playEl.innerText = 'pause';
+  }
+
+  render(game);
+};
+
+const handleResetGame = () => {
+  game.reset(selectEl.value);
+  playEl.innerText = 'play';
+  boardOverlayEl.style.display = 'flex';
+  render(game);
+};
+
+const handleSizeSelect = e => {
+  game.reset(e.target.value);
+  playEl.innerText = 'play';
+  boardOverlayEl.style.display = 'flex';
+  render(game);
+};
+
+const handleArrowKeys = e => {
   switch (e.key) {
     case 'ArrowUp':
+      e.preventDefault();
       game.move('up');
       break;
     case 'ArrowDown':
+      e.preventDefault();
       game.move('down');
       break;
     case 'ArrowLeft':
+      e.preventDefault();
       game.move('left');
       break;
     case 'ArrowRight':
+      e.preventDefault();
       game.move('right');
       break;
     default:
       break;
   }
-  render(game);
-});
 
-selectEl.addEventListener('change', e => {
-  game = new Game(e.target.value);
-  render(game);
-});
+  if (game.status === 'finished') {
+    movesEl.classList.add('flash');
+    timeEl.classList.add('flash');
+  }
 
-resetEl.addEventListener('click', () => {
-  game = new Game(selectEl.value);
   render(game);
-});
+};
+
+window.addEventListener('keydown', handleArrowKeys);
+resetEl.addEventListener('click', handleResetGame);
+playEl.addEventListener('click', handleTogglePlay);
+selectEl.addEventListener('change', handleSizeSelect);
+boardOverlayEl.addEventListener('click', handleTogglePlay);
