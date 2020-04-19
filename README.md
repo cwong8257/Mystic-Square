@@ -6,7 +6,7 @@ Play Mystic Square [here](https://fathomless-plateau-12855.herokuapp.com/ "Fifte
 
 Sliding puzzle that consists of a frame of numbered square tiles in random order with one tile missing. The objective is to move the tiles into ascending order with the empty tile in the bottom right corner.
 
-![untitled](https://s3.us-east-2.amazonaws.com/christopherwong.us/images/mystic_square.png)
+![screenshot](./assets/screenshot.png)
 
 ## How To Play
 
