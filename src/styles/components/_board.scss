@@ -2,17 +2,20 @@
   position: relative;
   user-select: none;
   box-shadow: 0 2rem 4rem rgba(#000, 0.3);
+  border: 0.1rem solid black;
+  background-color: $color-primary;
+  border-radius: 1em;
 
   &__overlay {
+    position: absolute;
     height: 100%;
     width: 100%;
-    background-color: rgba($color-grey-dark-1, 0.3);
-    border-radius: 5px;
+    background-color: inherit;
+    border-radius: inherit;
     font-size: 6rem;
     color: inherit;
     text-transform: uppercase;
     cursor: pointer;
-    position: absolute;
     z-index: 1;
 
     display: flex;
@@ -27,28 +30,29 @@
   }
 
   &__content {
-    height: 60rem;
-    width: 60rem;
-    margin: auto;
-    padding: 1rem;
-    border: 0.1rem solid black;
-    border-radius: 5px;
-    background-color: $color-primary;
     user-select: none;
 
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    padding: calc(5em / var(--board-columns) - 1px);
+    grid-template-columns: repeat(var(--board-columns), 1fr);
+    gap: calc(5em / var(--board-columns));
   }
 
   &__tile {
     background-color: $color-grey-light-1;
-    display: inline-flex;
+    border: 0.1rem solid black;
+    border-radius: calc(1em / var(--board-columns));
+    font-size: calc(16em / var(--board-columns));
+    cursor: pointer;
+    display: flex;
     justify-content: center;
     align-items: center;
-    border: 0.1rem solid black;
-    border-radius: 5px;
-    transition: all 0.2s ease-out;
-    cursor: pointer;
+
+    &::before {
+      content: "";
+      height: 0;
+      padding-bottom: 100%;
+    }
 
     &:hover {
       background: darken($color-grey-light-1, 5%);

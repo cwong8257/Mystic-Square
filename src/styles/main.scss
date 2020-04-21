@@ -1,7 +1,6 @@
 @import 'abstracts/variables';
 
 @import 'base/base';
-@import 'base/animations';
 @import 'base/typography';
 
 @import 'components/board';
@@ -9,3 +8,5 @@
 @import 'components/header';
 @import 'components/instructions';
 @import 'components/select';
+
+@import 'utils/hide';
