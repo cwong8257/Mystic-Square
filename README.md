@@ -1,6 +1,6 @@
 # Mystic-Square
 
-Play Mystic Square [here](https://fathomless-plateau-12855.herokuapp.com/ "Fifteen Puzzle Game")!
+Play Mystic Square [here](http://shivering-force.surge.sh/ "Mystic Square")!
 
 ## Description
 
