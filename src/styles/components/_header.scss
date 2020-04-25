@@ -58,16 +58,19 @@
   }
 }
 
-@media screen and (min-width: 630px) {
+@media screen and (min-width: 63rem) {
   .header {
-    flex-flow: row nowrap;
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
 
     &__logo {
       margin-bottom: 0;
+      flex: 1 1 auto;
     }
 
     &__controls {
-      grid-template-columns: repeat(2, 1fr);
+      flex: 1 1 auto;
+      grid-template-columns: repeat(2, 50%);
       gap: 1rem;
 
       & > * {
