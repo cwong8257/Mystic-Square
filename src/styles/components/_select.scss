@@ -1,22 +1,29 @@
 .select {
+  @extend %heading-2;
   justify-self: center;
   text-align: center;
 
   &__text {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2vw;
   }
 
   &__input {
-    padding: 0.5rem 2rem;
     appearance: none;
-    font-size: 1.6rem;
     font-family: inherit;
+    font-size: inherit;
     color: inherit;
 
     &:focus,
     &:active {
       outline: none;
+    }
+  }
+}
+
+@media screen and (min-width: 630px) {
+  .select {
+    &__text {
+      margin-bottom: 2rem;
     }
   }
 }

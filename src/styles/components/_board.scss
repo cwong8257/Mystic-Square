@@ -4,15 +4,15 @@
   box-shadow: 0 2rem 4rem rgba(#000, 0.3);
   border: 0.1rem solid black;
   background-color: $color-primary;
-  border-radius: 1em;
+  border-radius: calc(9vw / var(--board-columns));
 
   &__overlay {
+    @extend %heading-1;
     position: absolute;
     height: 100%;
     width: 100%;
     background-color: inherit;
     border-radius: inherit;
-    font-size: 6rem;
     color: inherit;
     text-transform: uppercase;
     cursor: pointer;
@@ -33,16 +33,16 @@
     user-select: none;
 
     display: grid;
-    padding: calc(5em / var(--board-columns) - 1px);
+    padding: calc(7vw / var(--board-columns) - 1px);
     grid-template-columns: repeat(var(--board-columns), 1fr);
-    gap: calc(5em / var(--board-columns));
+    gap: calc(7vw / var(--board-columns));
   }
 
   &__tile {
     background-color: $color-grey-light-1;
     border: 0.1rem solid black;
-    border-radius: calc(1em / var(--board-columns));
-    font-size: calc(16em / var(--board-columns));
+    border-radius: calc(9vw / var(--board-columns));
+    font-size: calc(30vw / var(--board-columns));
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -61,6 +61,23 @@
     &--empty {
       opacity: 0;
       cursor: default;
+    }
+  }
+}
+
+@media screen and (min-width: 630px) {
+  .board {
+    border-radius: calc(4rem / var(--board-columns));
+  
+    &__content {
+      padding: calc(6rem / var(--board-columns) - 1px);
+      grid-template-columns: repeat(var(--board-columns), 1fr);
+      gap: calc(6rem / var(--board-columns));
+    }
+  
+    &__tile {
+      border-radius: calc(4rem / var(--board-columns));
+      font-size: calc(18rem / var(--board-columns));
     }
   }
 }

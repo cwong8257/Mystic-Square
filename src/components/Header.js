@@ -8,23 +8,20 @@ function Header ({ moves, time, handleOnClickReset, handleOnClickPlay }) {
 
   return (
     <header className="header">
-      <h1 className="heading-1 header__title">Mystic Square</h1>
-      <div className="moves">
-        <p className="heading-3 moves__text">Moves</p>
-        <span className="moves__count">{moves}</span>
+      <h1 className="header__logo">Mystic Square</h1>
+      <div className="header__controls">
+        <div className="moves">
+          <p className="moves__title">Moves</p>
+          <span className="moves__count">{moves}</span>
+        </div>
+        <div className="time">
+          <p className="time__title">Time</p>
+          <span className="time__count">{timerString}</span>
+        </div>
+        <button onClick={handleOnClickPlay}>Play</button>
+        <button onClick={handleOnClickReset}>Reset</button>
       </div>
-      <div className="time">
-        <p className="heading-3 moves__text">Time</p>
-        <span className="moves__count">{timerString}</span>
-      </div>
-      <button
-        className="btn"
-        onClick={handleOnClickPlay}
-      >Play</button>
-      <button
-        className="btn"
-        onClick={handleOnClickReset}
-      >Reset</button>
+
     </header>
   )
 }

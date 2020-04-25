@@ -17,17 +17,19 @@ html {
 
 body {
   background-color: $color-grey-light-1;
-  font-family: $font-primary;
-  color: $color-grey-dark-1;
-  font-weight: 300;
-  line-height: 1.6;
 }
 
 .container {
-  max-width: 62rem;
+  max-width: 63rem;
   margin: 3rem auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
 
   display: grid;
-  grid-row-gap: 4rem;
+  grid-row-gap: 8vw;
+}
+
+@media screen and (min-width: 630px) {
+  .container {
+    grid-row-gap: 3rem;
+  }
 }
