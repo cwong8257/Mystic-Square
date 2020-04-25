@@ -23,6 +23,10 @@ class App extends React.Component {
   }
 
   handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      return this.handlePause()
+    }
+
     if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return
 
     e.preventDefault()
@@ -87,9 +91,33 @@ class App extends React.Component {
   handleOnClickPlay = () => {
     if (this.state.gameState === 'playing') return
 
+    this.unpause()
+  }
+
+  handlePause = () => {
+    switch (this.state.gameState) {
+      case 'playing': return this.pause()
+      case 'paused': return this.unpause()
+    }
+
     this.setState({
       timerId: this.startTimer(),
       gameState: 'playing'
+    })
+  }
+
+  unpause = () => {
+    this.setState({
+      timerId: this.startTimer(),
+      gameState: 'playing'
+    })
+  }
+
+  pause = () => {
+    clearInterval(this.state.timerId)
+
+    this.setState({
+      gameState: 'paused'
     })
   }
 
@@ -111,10 +139,11 @@ class App extends React.Component {
     return (
       <div className="container">
         <Header
+          gameState={this.state.gameState}
           time={this.state.time}
           moves={this.state.moveCount}
           handleOnClickReset={this.handleOnClickReset}
-          handleOnClickPlay={this.handleOnClickPlay}
+          handlePause={this.handlePause}
         />
         <Board
           tiles={this.state.tiles}

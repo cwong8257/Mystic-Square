@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 
 import timeString from '../utils/timeString'
 
-function Header ({ moves, time, handleOnClickReset, handleOnClickPlay }) {
+function Header ({ gameState, moves, time, handleOnClickReset, handlePause }) {
   const timerString = timeString(time)
+  const pauseText = gameState === 'playing' ? 'Pause' : 'Play'
 
   return (
     <header className="header">
@@ -18,19 +19,19 @@ function Header ({ moves, time, handleOnClickReset, handleOnClickPlay }) {
           <p className="time__title">Time</p>
           <span className="time__count">{timerString}</span>
         </div>
-        <button onClick={handleOnClickPlay}>Play</button>
+        <button onClick={handlePause}>{pauseText}</button>
         <button onClick={handleOnClickReset}>Reset</button>
       </div>
-
     </header>
   )
 }
 
 Header.propTypes = {
+  gameState: PropTypes.string,
   moves: PropTypes.number,
   time: PropTypes.number,
   handleOnClickReset: PropTypes.func,
-  handleOnClickPlay: PropTypes.func
+  handlePause: PropTypes.func
 }
 
 export default Header
