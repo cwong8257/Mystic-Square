@@ -1,38 +1,118 @@
 const OFFSET_1 = 1
-const OFFSET_2 = 2
-const OFFSET_3 = 3
 const EVEN_DIVISOR = 2
 const ZERO_REMAINDER = 0
+const BLANK_TILE = 0
 const DIMENSION_1D = 1
 const DIMENSION_2D = 2
 const FLAT_DEPTH = 2
 const STEP = 1
+const NOT_FOUND = -1
 
 class MysticBoard {
   constructor (dimensions) {
     this.tiles = MysticBoard.buildBoard(dimensions)
     this.dimensions = dimensions
-    this.zeroRow = dimensions - OFFSET_1
-    this.zeroCol = dimensions - OFFSET_1
+
+    // Find the blank (0) position in the shuffled board
+    for (let row = 0; row < dimensions; row++) {
+      for (let col = 0; col < dimensions; col++) {
+        if (this.tiles[row][col] === BLANK_TILE) {
+          this.zeroRow = row
+          this.zeroCol = col
+        }
+      }
+    }
   }
 
   static buildBoard (size) {
+    const flat = MysticBoard.buildSolvedFlat(size)
+
+    MysticBoard.shuffle(flat)
+
+    if (!MysticBoard.isSolvable(flat, size)) {
+      MysticBoard.fixParity(flat)
+    }
+
+    return MysticBoard.reshapeTo2D(flat, size)
+  }
+
+  static buildSolvedFlat (size) {
+    const totalTiles = size * size
+    const flat = []
+
+    for (let idx = OFFSET_1; idx < totalTiles; idx++) {
+      flat.push(idx)
+    }
+    flat.push(BLANK_TILE)
+
+    return flat
+  }
+
+  static shuffle (flat) {
+    for (let idx = flat.length - OFFSET_1; idx > BLANK_TILE; idx--) {
+      const swapIdx = Math.floor(Math.random() * (idx + OFFSET_1))
+      ;[flat[idx], flat[swapIdx]] = [flat[swapIdx], flat[idx]]
+    }
+  }
+
+  static reshapeTo2D (flat, size) {
     const tiles = []
-
     for (let row = 0; row < size; row++) {
-      tiles.push([])
+      tiles.push(flat.slice(row * size, (row + OFFSET_1) * size))
+    }
+    return tiles
+  }
 
-      for (let col = 0; col < size; col++) {
-        tiles[row][col] = size * size - OFFSET_1 - col - row * size
+  static countInversions (flat) {
+    let inversions = 0
+    for (let idx = 0; idx < flat.length; idx++) {
+      if (flat[idx] === BLANK_TILE) {
+        // Skip blank tile — not counted in inversions
+      } else {
+        for (let cmp = idx + OFFSET_1; cmp < flat.length; cmp++) {
+          if (flat[cmp] !== BLANK_TILE && flat[idx] > flat[cmp]) {
+            inversions++
+          }
+        }
       }
     }
+    return inversions
+  }
 
-    if (size % EVEN_DIVISOR === ZERO_REMAINDER) {
-      [tiles[size - OFFSET_1][size - OFFSET_2], tiles[size - OFFSET_1][size - OFFSET_3]] =
-      [tiles[size - OFFSET_1][size - OFFSET_3], tiles[size - OFFSET_1][size - OFFSET_2]]
+  static isSolvable (flat, size) {
+    const inversions = MysticBoard.countInversions(flat)
+    const blankIndex = flat.indexOf(BLANK_TILE)
+    const blankRowFromBottom = size - Math.floor(blankIndex / size)
+
+    if (size % EVEN_DIVISOR !== ZERO_REMAINDER) {
+      // Odd-width boards: solvable when inversion count is even
+      return inversions % EVEN_DIVISOR === ZERO_REMAINDER
     }
 
-    return tiles
+    // Even-width boards: solvable when
+    // (blank on odd row from bottom + even inversions) or
+    // (blank on even row from bottom + odd inversions)
+    if (blankRowFromBottom % EVEN_DIVISOR !== ZERO_REMAINDER) {
+      return inversions % EVEN_DIVISOR === ZERO_REMAINDER
+    }
+    return inversions % EVEN_DIVISOR !== ZERO_REMAINDER
+  }
+
+  static fixParity (flat) {
+    // Swap two adjacent non-blank tiles to flip inversion parity
+    let first = NOT_FOUND
+    let second = NOT_FOUND
+    for (let idx = 0; idx < flat.length; idx++) {
+      if (flat[idx] !== BLANK_TILE) {
+        if (first < BLANK_TILE) {
+          first = idx
+        } else {
+          second = idx
+          break
+        }
+      }
+    }
+    ;[flat[first], flat[second]] = [flat[second], flat[first]]
   }
 
   checkWin () {
