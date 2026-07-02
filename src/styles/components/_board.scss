@@ -5,10 +5,17 @@
 .board {
   position: relative;
   user-select: none;
-  box-shadow: 0 2rem 4rem rgb(0 0 0 / 0.3);
-  border: 0.1rem solid black;
+  box-shadow:
+    0 2rem 4rem rgb(0 0 0 / 0.4),
+    inset 0 0.15rem 0.3rem rgb(255 255 255 / 0.25);
+  border-width: 0.5rem;
+  border-style: solid;
+  border-color:
+    color.adjust($color-primary, $lightness: 18%) 
+    color.adjust($color-primary-dark, $lightness: -18%)
+    color.adjust($color-primary-dark, $lightness: -18%)
+    color.adjust($color-primary, $lightness: 18%);
   background-color: $color-primary;
-  border-radius: calc(9vw / var(--board-columns));
 
   &__overlay {
     @extend %heading-1;
@@ -37,15 +44,13 @@
     user-select: none;
 
     display: grid;
-    padding: calc(7vw / var(--board-columns) - 1px);
     grid-template-columns: repeat(var(--board-columns), 1fr);
-    gap: calc(7vw / var(--board-columns));
+    gap: 0;
   }
 
   &__tile {
     background-color: $color-grey-light-1;
     border: 0.1rem solid black;
-    border-radius: calc(9vw / var(--board-columns));
     font-size: calc(30vw / var(--board-columns));
     cursor: pointer;
     display: flex;
@@ -71,16 +76,12 @@
 
 @media screen and (min-width: 63rem) {
   .board {
-    border-radius: calc(4rem / var(--board-columns));
-  
     &__content {
-      padding: calc(6rem / var(--board-columns) - 1px);
       grid-template-columns: repeat(var(--board-columns), 1fr);
-      gap: calc(6rem / var(--board-columns));
+      gap: 0;
     }
   
     &__tile {
-      border-radius: calc(4rem / var(--board-columns));
       font-size: calc(18rem / var(--board-columns));
     }
   }
