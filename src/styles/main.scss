@@ -1,11 +1,11 @@
-@import 'abstracts/variables';
+@use 'abstracts/variables';
 
-@import 'base/base';
-@import 'base/typography';
+@use 'base/base';
+@use 'base/typography';
 
-@import 'components/board';
-@import 'components/header';
-@import 'components/instructions';
-@import 'components/select';
+@use 'components/board';
+@use 'components/header';
+@use 'components/instructions';
+@use 'components/select';
 
-@import 'utils/hide';
+@use 'utils/hide';

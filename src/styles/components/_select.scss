@@ -1,3 +1,5 @@
+@use '../base/typography';
+
 .select {
   @extend %heading-2;
   justify-self: center;

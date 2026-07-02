@@ -1,7 +1,11 @@
+@use 'sass:color';
+@use '../abstracts/variables' as *;
+@use '../base/typography';
+
 .board {
   position: relative;
   user-select: none;
-  box-shadow: 0 2rem 4rem rgba(#000, 0.3);
+  box-shadow: 0 2rem 4rem rgb(0 0 0 / 0.3);
   border: 0.1rem solid black;
   background-color: $color-primary;
   border-radius: calc(9vw / var(--board-columns));
@@ -25,7 +29,7 @@
     transition: all 0.2s;
 
     &:hover {
-      color: darken($color-grey-dark-1, 10%);
+      color: color.adjust($color-grey-dark-1, $lightness: -10%);
     }
   }
 
@@ -55,7 +59,7 @@
     }
 
     &:hover {
-      background: darken($color-grey-light-1, 5%);
+      background: color.adjust($color-grey-light-1, $lightness: -5%);
     }
 
     &--empty {
