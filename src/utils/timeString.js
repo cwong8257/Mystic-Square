@@ -1,9 +1,11 @@
 import leftPad from './leftPad'
 
-function timeString (seconds) {
-  const minutes = Math.floor(seconds / 60)
-  seconds -= minutes * 60
-  return `${leftPad(minutes)}:${leftPad(seconds)}`
+const SECONDS_PER_MINUTE = 60
+
+const timeString = (seconds) => {
+  const minutes = Math.floor(seconds / SECONDS_PER_MINUTE)
+  const remainingSeconds = seconds % SECONDS_PER_MINUTE
+  return `${leftPad(minutes)}:${leftPad(remainingSeconds)}`
 }
 
 export default timeString

@@ -5,21 +5,6 @@
     "suspicious": "warn",
     "style": "warn"
   },
-  "rules": {
-    "no-magic-numbers": "off",
-    "sort-keys": "off",
-    "curly": "off",
-    "arrow-body-style": "off",
-    "no-ternary": "off",
-    "no-underscore-dangle": "off",
-    "id-length": "off",
-    "func-style": "off",
-    "sort-imports": "off",
-    "react/no-set-state": "off",
-    "react/jsx-handler-names": "off",
-    "react/jsx-max-depth": "off",
-    "react/state-in-constructor": "off"
-  },
   "settings": {
     "react": {
       "version": "19"

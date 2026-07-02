@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import Board from './Board'
 import BoardSizeSelection from './BoardSizeSelection'
@@ -6,159 +6,223 @@ import Header from './Header'
 import Instructions from './Instructions'
 import MysticBoard from '../MysticBoard'
 
-let gameBoard = new MysticBoard(4)
+const DEFAULT_BOARD_SIZE = 4
+const DIMENSION_1D = 1
+const INCREMENT_STEP = 1
+const INITIAL_VALUE = 0
+const ONE_SECOND_MS = 1000
+const RADIX_DECIMAL = 10
 
-class App extends React.Component {
-  state = {
-    tiles: gameBoard.getTiles(1),
-    size: 4,
-    moveCount: 0,
-    gameState: 'paused', // ENUM: 'paused', 'playing', 'finished'
-    timerId: null,
-    time: 0
-  }
+let gameBoard = new MysticBoard(DEFAULT_BOARD_SIZE)
 
-  componentDidMount = () => {
-    window.addEventListener('keydown', this.handleKeyDown)
-  }
+const useGameTimer = () => {
+  const [time, setTime] = useState(INITIAL_VALUE)
+  const timerRef = useRef(null)
 
-  handleKeyDown = (e) => {
-    if (e.key === 'Escape') {
-      return this.handlePause()
+  const startTimer = useCallback(() => {
+    clearInterval(timerRef.current)
+    timerRef.current = setInterval(() => {
+      setTime((prevTime) => prevTime + INCREMENT_STEP)
+    }, ONE_SECOND_MS)
+  }, [])
+
+  const stopTimer = useCallback(() => {
+    clearInterval(timerRef.current)
+  }, [])
+
+  const resetTime = useCallback(() => {
+    setTime(INITIAL_VALUE)
+  }, [])
+
+  return { resetTime, startTimer, stopTimer, time }
+}
+
+const useTimerControls = ({ gameState, setGameState, startTimer, stopTimer }) => {
+  const pause = useCallback(() => {
+    stopTimer()
+    setGameState('paused')
+  }, [setGameState, stopTimer])
+
+  const unpause = useCallback(() => {
+    setGameState('playing')
+    startTimer()
+  }, [setGameState, startTimer])
+
+  const handlePause = useCallback(() => {
+    switch (gameState) {
+      case 'playing':
+        pause()
+        break
+      case 'paused':
+        unpause()
+        break
+      default:
+        setGameState('playing')
+        startTimer()
+        break
     }
+  }, [gameState, pause, setGameState, startTimer, unpause])
 
-    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return
+  const handleOnClickPlay = useCallback(() => {
+    if (gameState !== 'playing') {
+      unpause()
+    }
+  }, [gameState, unpause])
 
-    e.preventDefault()
+  return { handleOnClickPlay, handlePause }
+}
 
-    if (!(this.state.gameState === 'playing' && gameBoard.moveDirection(e.key))) return
+const useBoardActions = ({
+  gameState,
+  handleOnClickPlay,
+  resetTime,
+  setGameState,
+  setMoveCount,
+  setSize,
+  setTiles,
+  size,
+  stopTimer
+}) => {
+  const handleWin = useCallback(() => {
+    stopTimer()
+    setGameState('finished')
+  }, [setGameState, stopTimer])
 
-    this.setState((prevState) => ({
-      moveCount: prevState.moveCount + 1,
-      tiles: gameBoard.getTiles(1),
-      ...gameBoard.checkWin() && {
-        gameState: 'finished',
-        timerId: clearInterval(prevState.timerId)
-      }
-    }))
-  }
+  const handleMoveSuccess = useCallback(() => {
+    if (gameBoard.checkWin()) {
+      handleWin()
+    }
+    setMoveCount((prevCount) => prevCount + INCREMENT_STEP)
+    setTiles(gameBoard.getTiles(DIMENSION_1D))
+  }, [handleWin, setMoveCount, setTiles])
 
-  handleOnClickTile = (e) => {
-    const num = parseInt(e.target.dataset.number)
-
-    if (!(this.state.gameState === 'playing' && gameBoard.moveTile(num))) return
-
-    this.setState((prevState) => ({
-      moveCount: prevState.moveCount + 1,
-      tiles: gameBoard.getTiles(1),
-      ...gameBoard.checkWin() && {
-        gameState: 'finished',
-        timerId: clearInterval(prevState.timerId)
-      }
-    }))
-  }
-
-  handleOnChangeSize = (e) => {
-    const size = parseInt(e.target.value)
-
-    clearInterval(this.state.timerId)
+  const handleOnClickReset = useCallback(() => {
+    stopTimer()
     gameBoard = new MysticBoard(size)
-    document.documentElement.style.setProperty('--board-columns', size)
+    setGameState('paused')
+    setMoveCount(INITIAL_VALUE)
+    setTiles(gameBoard.getTiles(DIMENSION_1D))
+    resetTime()
+  }, [resetTime, setGameState, setMoveCount, setTiles, size, stopTimer])
 
-    this.setState({
-      tiles: gameBoard.getTiles(1),
-      size,
-      moveCount: 0,
-      time: 0,
-      gameState: 'paused',
-      timerId: null
-    })
+  const handleOnClickBoardOverlay = useCallback(() => {
+    if (gameState === 'finished') {
+      handleOnClickReset()
+      return
+    }
+    handleOnClickPlay()
+  }, [gameState, handleOnClickPlay, handleOnClickReset])
+
+  const handleOnChangeSize = useCallback((event) => {
+    const newSize = parseInt(event.target.value, RADIX_DECIMAL)
+    stopTimer()
+    gameBoard = new MysticBoard(newSize)
+    document.documentElement.style.setProperty('--board-columns', newSize)
+    setGameState('paused')
+    setMoveCount(INITIAL_VALUE)
+    setSize(newSize)
+    setTiles(gameBoard.getTiles(DIMENSION_1D))
+    resetTime()
+  }, [resetTime, setGameState, setMoveCount, setSize, setTiles, stopTimer])
+
+  const handleOnClickTile = useCallback((event) => {
+    const num = parseInt(event.target.dataset.number, RADIX_DECIMAL)
+    if (gameState === 'playing' && gameBoard.moveTile(num)) {
+      handleMoveSuccess()
+    }
+  }, [gameState, handleMoveSuccess])
+
+  return {
+    handleMoveSuccess,
+    handleOnChangeSize,
+    handleOnClickBoardOverlay,
+    handleOnClickReset,
+    handleOnClickTile
   }
+}
 
-  handleOnClickReset = () => {
-    clearInterval(this.state.timerId)
-    gameBoard = new MysticBoard(this.state.size)
-
-    this.setState({
-      tiles: gameBoard.getTiles(1),
-      moveCount: 0,
-      time: 0,
-      gameState: 'paused',
-      timerId: null
-    })
-  }
-
-  handleOnClickPlay = () => {
-    if (this.state.gameState === 'playing') return
-
-    this.unpause()
-  }
-
-  handlePause = () => {
-    switch (this.state.gameState) {
-      case 'playing': return this.pause()
-      case 'paused': return this.unpause()
+const useKeyboardControls = ({ gameState, handleMoveSuccess, handlePause }) => {
+  const handleKeyDown = useCallback((event) => {
+    if (event.key === 'Escape') {
+      handlePause()
+      return
     }
 
-    this.setState({
-      timerId: this.startTimer(),
-      gameState: 'playing'
-    })
-  }
-
-  unpause = () => {
-    this.setState({
-      timerId: this.startTimer(),
-      gameState: 'playing'
-    })
-  }
-
-  pause = () => {
-    clearInterval(this.state.timerId)
-
-    this.setState({
-      gameState: 'paused'
-    })
-  }
-
-  handleOnClickBoardOverlay = () => {
-    if (this.state.gameState === 'finished') {
-      return this.handleOnClickReset()
+    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+      return
     }
 
-    this.handleOnClickPlay()
-  }
+    event.preventDefault()
 
-  startTimer = () => {
-    return setInterval(() => {
-      this.setState((prevState) => ({ time: prevState.time + 1 }))
-    }, 1000)
-  }
+    if (gameState === 'playing' && gameBoard.moveDirection(event.key)) {
+      handleMoveSuccess()
+    }
+  }, [gameState, handleMoveSuccess, handlePause])
 
-  render = () => {
-    return (
-      <div className="container">
-        <Header
-          gameState={this.state.gameState}
-          time={this.state.time}
-          moves={this.state.moveCount}
-          handleOnClickReset={this.handleOnClickReset}
-          handlePause={this.handlePause}
-        />
-        <Board
-          tiles={this.state.tiles}
-          gameState={this.state.gameState}
-          handleOnClickTile={this.handleOnClickTile}
-          handleOnClickBoardOverlay={this.handleOnClickBoardOverlay}
-        />
-        <BoardSizeSelection
-          size={this.state.size}
-          handleOnChangeSize={this.handleOnChangeSize}
-        />
-        <Instructions />
-      </div>
-    )
-  }
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [handleKeyDown])
+}
+
+const App = () => {
+  const [gameState, setGameState] = useState('paused')
+  const [moveCount, setMoveCount] = useState(INITIAL_VALUE)
+  const [size, setSize] = useState(DEFAULT_BOARD_SIZE)
+  const [tiles, setTiles] = useState(() => gameBoard.getTiles(DIMENSION_1D))
+  const { resetTime, startTimer, stopTimer, time } = useGameTimer()
+
+  const { handleOnClickPlay, handlePause } = useTimerControls({
+    gameState,
+    setGameState,
+    startTimer,
+    stopTimer
+  })
+
+  const {
+    handleMoveSuccess,
+    handleOnChangeSize,
+    handleOnClickBoardOverlay,
+    handleOnClickReset,
+    handleOnClickTile
+  } = useBoardActions({
+    gameState,
+    handleOnClickPlay,
+    resetTime,
+    setGameState,
+    setMoveCount,
+    setSize,
+    setTiles,
+    size,
+    stopTimer
+  })
+
+  useKeyboardControls({ gameState, handleMoveSuccess, handlePause })
+
+  return (
+    <div className="container">
+      <Header
+        gameState={gameState}
+        moves={moveCount}
+        time={time}
+        onClickPause={handlePause}
+        onClickReset={handleOnClickReset}
+      />
+      <Board
+        gameState={gameState}
+        tiles={tiles}
+        onClickBoardOverlay={handleOnClickBoardOverlay}
+        onClickTile={handleOnClickTile}
+      />
+      <BoardSizeSelection
+        size={size}
+        onChangeSize={handleOnChangeSize}
+      />
+      <Instructions />
+    </div>
+  )
 }
 
 export default App
