@@ -6,6 +6,8 @@
   "scripts": {
     "start": "parcel index.html",
     "build": "rm -rf ./dist && parcel build index.html",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
     "deploy": "npm run build && surge ./dist http://shivering-force.surge.sh/"
   },
   "author": "Christopher Wong",
@@ -18,15 +20,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
-    "babel-eslint": "^10.1.0",
+    "@oxlint/binding-darwin-arm64": "^1.72.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.19.0",
-    "eslint-plugin-standard": "^4.0.1",
+    "oxlint": "^1.72.0",
     "parcel-bundler": "^1.12.4",
     "sass": "^1.26.3"
   }

@@ -3,7 +3,7 @@
 ## Code Style
 
 - Follow **Standard JS** style: no semicolons, single quotes, 2-space indentation.
-- ESLint is configured with `eslint-config-standard` and `eslint-plugin-react` — all code must pass lint.
+- **Oxlint** is used for linting (configured in `.oxlintrc.json` with `react` plugin and `correctness`, `suspicious`, `style` categories) — all code must pass `npm run lint`.
 
 ## React
 
