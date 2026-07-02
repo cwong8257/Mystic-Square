@@ -12,6 +12,9 @@
   },
   "author": "Christopher Wong",
   "license": "ISC",
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "dependencies": {
     "classnames": "^2.2.6",
     "prop-types": "^15.7.2",
