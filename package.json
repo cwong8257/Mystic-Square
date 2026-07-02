@@ -2,10 +2,9 @@
   "name": "mystic-square",
   "version": "1.0.0",
   "description": "",
-  "main": "index.html",
   "scripts": {
-    "start": "parcel index.html",
-    "build": "rm -rf ./dist && parcel build index.html",
+    "start": "vite",
+    "build": "vite build",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "deploy": "npm run build && surge ./dist http://shivering-force.surge.sh/"
@@ -22,10 +21,9 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "babel-plugin-transform-class-properties": "^6.24.1",
+    "@vitejs/plugin-react": "^4.5.3",
     "oxlint": "^1.72.0",
-    "parcel-bundler": "^1.12.4",
-    "sass": "^1.26.3"
+    "sass": "^1.26.3",
+    "vite": "^7.0.4"
   }
 }
