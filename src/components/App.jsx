@@ -1,10 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { checkWin, createBoard, getTiles, moveDirection, moveTile } from '../MysticBoard'
+import {
+  loadAndCropImage,
+  loadImageFromStorage,
+  saveImageToStorage,
+  sliceImage
+} from '../utils/imageProcessor'
 
 import Board from './Board'
 import BoardSizeSelection from './BoardSizeSelection'
 import Header from './Header'
 import Instructions from './Instructions'
-import MysticBoard from '../MysticBoard'
+import PhotoUpload from './PhotoUpload'
 
 const DEFAULT_BOARD_SIZE = 4
 const DIMENSION_1D = 1
@@ -13,7 +20,7 @@ const INITIAL_VALUE = 0
 const ONE_SECOND_MS = 1000
 const RADIX_DECIMAL = 10
 
-let gameBoard = new MysticBoard(DEFAULT_BOARD_SIZE)
+let gameBoard = createBoard(DEFAULT_BOARD_SIZE)
 
 const useGameTimer = () => {
   const [time, setTime] = useState(INITIAL_VALUE)
@@ -89,19 +96,19 @@ const useBoardActions = ({
   }, [setGameState, stopTimer])
 
   const handleMoveSuccess = useCallback(() => {
-    if (gameBoard.checkWin()) {
+    if (checkWin(gameBoard)) {
       handleWin()
     }
     setMoveCount((prevCount) => prevCount + INCREMENT_STEP)
-    setTiles(gameBoard.getTiles(DIMENSION_1D))
+    setTiles(getTiles(gameBoard, DIMENSION_1D))
   }, [handleWin, setMoveCount, setTiles])
 
   const handleOnClickReset = useCallback(() => {
     stopTimer()
-    gameBoard = new MysticBoard(size)
+    gameBoard = createBoard(size)
     setGameState('paused')
     setMoveCount(INITIAL_VALUE)
-    setTiles(gameBoard.getTiles(DIMENSION_1D))
+    setTiles(getTiles(gameBoard, DIMENSION_1D))
     resetTime()
   }, [resetTime, setGameState, setMoveCount, setTiles, size, stopTimer])
 
@@ -116,18 +123,18 @@ const useBoardActions = ({
   const handleOnChangeSize = useCallback((event) => {
     const newSize = parseInt(event.target.value, RADIX_DECIMAL)
     stopTimer()
-    gameBoard = new MysticBoard(newSize)
+    gameBoard = createBoard(newSize)
     document.documentElement.style.setProperty('--board-columns', newSize)
     setGameState('paused')
     setMoveCount(INITIAL_VALUE)
     setSize(newSize)
-    setTiles(gameBoard.getTiles(DIMENSION_1D))
+    setTiles(getTiles(gameBoard, DIMENSION_1D))
     resetTime()
   }, [resetTime, setGameState, setMoveCount, setSize, setTiles, stopTimer])
 
   const handleOnClickTile = useCallback((event) => {
     const num = parseInt(event.target.dataset.number, RADIX_DECIMAL)
-    if (gameState === 'playing' && gameBoard.moveTile(num)) {
+    if (gameState === 'playing' && moveTile(gameBoard, num)) {
       handleMoveSuccess()
     }
   }, [gameState, handleMoveSuccess])
@@ -154,7 +161,7 @@ const useKeyboardControls = ({ gameState, handleMoveSuccess, handlePause }) => {
 
     event.preventDefault()
 
-    if (gameState === 'playing' && gameBoard.moveDirection(event.key)) {
+    if (gameState === 'playing' && moveDirection(gameBoard, event.key)) {
       handleMoveSuccess()
     }
   }, [gameState, handleMoveSuccess, handlePause])
@@ -167,12 +174,62 @@ const useKeyboardControls = ({ gameState, handleMoveSuccess, handlePause }) => {
   }, [handleKeyDown])
 }
 
+const usePhotoMode = (size) => {
+  const [mode, setMode] = useState('numbers')
+  const [photoDataUrl, setPhotoDataUrl] = useState(null)
+  const [tileImages, setTileImages] = useState(null)
+
+  // Load saved photo from localStorage on mount
+  useEffect(() => {
+    const saved = loadImageFromStorage()
+    if (saved) {
+      setPhotoDataUrl(saved)
+    }
+  }, [])
+
+  // Re-slice when photo or size changes
+  useEffect(() => {
+    if (photoDataUrl) {
+      sliceImage(photoDataUrl, size).then(setTileImages)
+    } else {
+      setTileImages(null)
+    }
+  }, [photoDataUrl, size])
+
+  const handlePhotoUpload = useCallback(async (file) => {
+    const cropped = await loadAndCropImage(file)
+    saveImageToStorage(cropped)
+    setPhotoDataUrl(cropped)
+    setMode('photo')
+  }, [])
+
+  const handleModeChange = useCallback((newMode) => {
+    setMode(newMode)
+  }, [])
+
+  return {
+    handleModeChange,
+    handlePhotoUpload,
+    mode,
+    photoDataUrl,
+    tileImages
+  }
+}
+
 const App = () => {
   const [gameState, setGameState] = useState('paused')
   const [moveCount, setMoveCount] = useState(INITIAL_VALUE)
   const [size, setSize] = useState(DEFAULT_BOARD_SIZE)
-  const [tiles, setTiles] = useState(() => gameBoard.getTiles(DIMENSION_1D))
+  const [tiles, setTiles] = useState(() => getTiles(gameBoard, DIMENSION_1D))
   const { resetTime, startTimer, stopTimer, time } = useGameTimer()
+
+  const {
+    handleModeChange,
+    handlePhotoUpload,
+    mode,
+    photoDataUrl,
+    tileImages
+  } = usePhotoMode(size)
 
   const { handleOnClickPlay, handlePause } = useTimerControls({
     gameState,
@@ -212,6 +269,8 @@ const App = () => {
       />
       <Board
         gameState={gameState}
+        mode={mode}
+        tileImages={tileImages}
         tiles={tiles}
         onClickBoardOverlay={handleOnClickBoardOverlay}
         onClickTile={handleOnClickTile}
@@ -219,6 +278,12 @@ const App = () => {
       <BoardSizeSelection
         size={size}
         onChangeSize={handleOnChangeSize}
+      />
+      <PhotoUpload
+        mode={mode}
+        photoDataUrl={photoDataUrl}
+        onModeChange={handleModeChange}
+        onPhotoUpload={handlePhotoUpload}
       />
       <Instructions />
     </div>

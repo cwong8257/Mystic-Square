@@ -3,13 +3,20 @@ import React from 'react'
 import Tile from './Tile'
 import classNames from 'classnames'
 
-const Board = ({ onClickTile, onClickBoardOverlay, tiles, gameState }) => {
+const getTileImageUrl = (tileImages, tile) => {
+  if (tileImages) { return tileImages[tile] }
+  return undefined
+}
+
+const Board = ({ onClickTile, onClickBoardOverlay, tiles, gameState, mode, tileImages }) => {
   const tileComponents = tiles
     .map((tile) => (
       <Tile
         key={tile}
         value={tile}
         onClickTile={onClickTile}
+        mode={mode}
+        imageUrl={getTileImageUrl(tileImages, tile)}
       />
     ))
 
@@ -32,9 +39,12 @@ const Board = ({ onClickTile, onClickBoardOverlay, tiles, gameState }) => {
 
 Board.propTypes = {
   gameState: PropTypes.string,
+  mode: PropTypes.string,
   onClickBoardOverlay: PropTypes.func,
   onClickTile: PropTypes.func,
+  tileImages: PropTypes.array,
   tiles: PropTypes.array
 }
 
 export default Board
+
