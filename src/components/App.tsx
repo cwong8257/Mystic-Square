@@ -1,5 +1,6 @@
+import { GameState, PuzzleMode } from '../types'
+import { MysticBoard, checkWin, createBoard, getTiles, moveDirection, moveTile } from '../MysticBoard'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { checkWin, createBoard, getTiles, moveDirection, moveTile } from '../MysticBoard'
 import {
   loadAndCropImage,
   loadImageFromStorage,
@@ -20,21 +21,39 @@ const INITIAL_VALUE = 0
 const ONE_SECOND_MS = 1000
 const RADIX_DECIMAL = 10
 
-let gameBoard = createBoard(DEFAULT_BOARD_SIZE)
+let gameBoard: MysticBoard = createBoard(DEFAULT_BOARD_SIZE)
 
-const useGameTimer = () => {
-  const [time, setTime] = useState(INITIAL_VALUE)
-  const timerRef = useRef(null)
+const updateBoardTiles = (board: MysticBoard, setTiles: React.Dispatch<React.SetStateAction<number[]>>) => {
+  const newTiles = getTiles(board, DIMENSION_1D)
+  if (Array.isArray(newTiles)) {
+    setTiles(newTiles as number[])
+  }
+}
+
+interface GameTimerResult {
+  resetTime: () => void
+  startTimer: () => void
+  stopTimer: () => void
+  time: number
+}
+
+const useGameTimer = (): GameTimerResult => {
+  const [time, setTime] = useState<number>(INITIAL_VALUE)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const startTimer = useCallback(() => {
-    clearInterval(timerRef.current)
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+    }
     timerRef.current = setInterval(() => {
       setTime((prevTime) => prevTime + INCREMENT_STEP)
     }, ONE_SECOND_MS)
   }, [])
 
   const stopTimer = useCallback(() => {
-    clearInterval(timerRef.current)
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+    }
   }, [])
 
   const resetTime = useCallback(() => {
@@ -44,7 +63,19 @@ const useGameTimer = () => {
   return { resetTime, startTimer, stopTimer, time }
 }
 
-const useTimerControls = ({ gameState, setGameState, startTimer, stopTimer }) => {
+interface TimerControlsProps {
+  gameState: GameState
+  setGameState: React.Dispatch<React.SetStateAction<GameState>>
+  startTimer: () => void
+  stopTimer: () => void
+}
+
+interface TimerControlsResult {
+  handleOnClickPlay: () => void
+  handlePause: () => void
+}
+
+const useTimerControls = ({ gameState, setGameState, startTimer, stopTimer }: TimerControlsProps): TimerControlsResult => {
   const pause = useCallback(() => {
     stopTimer()
     setGameState('paused')
@@ -79,6 +110,26 @@ const useTimerControls = ({ gameState, setGameState, startTimer, stopTimer }) =>
   return { handleOnClickPlay, handlePause }
 }
 
+interface BoardActionsProps {
+  gameState: GameState
+  handleOnClickPlay: () => void
+  resetTime: () => void
+  setGameState: React.Dispatch<React.SetStateAction<GameState>>
+  setMoveCount: React.Dispatch<React.SetStateAction<number>>
+  setSize: React.Dispatch<React.SetStateAction<number>>
+  setTiles: React.Dispatch<React.SetStateAction<number[]>>
+  size: number
+  stopTimer: () => void
+}
+
+interface BoardActionsResult {
+  handleMoveSuccess: () => void
+  handleOnChangeSize: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  handleOnClickBoardOverlay: () => void
+  handleOnClickReset: () => void
+  handleOnClickTile: (event: React.MouseEvent<HTMLDivElement>) => void
+}
+
 const useBoardActions = ({
   gameState,
   handleOnClickPlay,
@@ -89,7 +140,7 @@ const useBoardActions = ({
   setTiles,
   size,
   stopTimer
-}) => {
+}: BoardActionsProps): BoardActionsResult => {
   const handleWin = useCallback(() => {
     stopTimer()
     setGameState('finished')
@@ -100,7 +151,7 @@ const useBoardActions = ({
       handleWin()
     }
     setMoveCount((prevCount) => prevCount + INCREMENT_STEP)
-    setTiles(getTiles(gameBoard, DIMENSION_1D))
+    updateBoardTiles(gameBoard, setTiles)
   }, [handleWin, setMoveCount, setTiles])
 
   const handleOnClickReset = useCallback(() => {
@@ -108,7 +159,7 @@ const useBoardActions = ({
     gameBoard = createBoard(size)
     setGameState('paused')
     setMoveCount(INITIAL_VALUE)
-    setTiles(getTiles(gameBoard, DIMENSION_1D))
+    updateBoardTiles(gameBoard, setTiles)
     resetTime()
   }, [resetTime, setGameState, setMoveCount, setTiles, size, stopTimer])
 
@@ -120,20 +171,21 @@ const useBoardActions = ({
     handleOnClickPlay()
   }, [gameState, handleOnClickPlay, handleOnClickReset])
 
-  const handleOnChangeSize = useCallback((event) => {
+  const handleOnChangeSize = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
     const newSize = parseInt(event.target.value, RADIX_DECIMAL)
     stopTimer()
     gameBoard = createBoard(newSize)
-    document.documentElement.style.setProperty('--board-columns', newSize)
+    document.documentElement.style.setProperty('--board-columns', newSize.toString())
     setGameState('paused')
     setMoveCount(INITIAL_VALUE)
     setSize(newSize)
-    setTiles(getTiles(gameBoard, DIMENSION_1D))
+    updateBoardTiles(gameBoard, setTiles)
     resetTime()
   }, [resetTime, setGameState, setMoveCount, setSize, setTiles, stopTimer])
 
-  const handleOnClickTile = useCallback((event) => {
-    const num = parseInt(event.target.dataset.number, RADIX_DECIMAL)
+  const handleOnClickTile = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    const datasetNumber = (event.currentTarget as HTMLElement).dataset.number
+    const num = parseInt(datasetNumber || '0', RADIX_DECIMAL)
     if (gameState === 'playing' && moveTile(gameBoard, num)) {
       handleMoveSuccess()
     }
@@ -148,8 +200,14 @@ const useBoardActions = ({
   }
 }
 
-const useKeyboardControls = ({ gameState, handleMoveSuccess, handlePause }) => {
-  const handleKeyDown = useCallback((event) => {
+interface KeyboardControlsProps {
+  gameState: GameState
+  handleMoveSuccess: () => void
+  handlePause: () => void
+}
+
+const useKeyboardControls = ({ gameState, handleMoveSuccess, handlePause }: KeyboardControlsProps): void => {
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (event.key === 'Escape') {
       handlePause()
       return
@@ -174,12 +232,19 @@ const useKeyboardControls = ({ gameState, handleMoveSuccess, handlePause }) => {
   }, [handleKeyDown])
 }
 
-const usePhotoMode = (size) => {
-  const [mode, setMode] = useState('numbers')
-  const [photoDataUrl, setPhotoDataUrl] = useState(null)
-  const [tileImages, setTileImages] = useState(null)
+interface PhotoModeResult {
+  handleModeChange: (newMode: PuzzleMode) => void
+  handlePhotoUpload: (file: File) => Promise<void>
+  mode: PuzzleMode
+  photoDataUrl: string | null
+  tileImages: string[] | null
+}
 
-  // Load saved photo from localStorage on mount
+const usePhotoMode = (size: number): PhotoModeResult => {
+  const [mode, setMode] = useState<PuzzleMode>('numbers')
+  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null)
+  const [tileImages, setTileImages] = useState<string[] | null>(null)
+
   useEffect(() => {
     const saved = loadImageFromStorage()
     if (saved) {
@@ -187,7 +252,6 @@ const usePhotoMode = (size) => {
     }
   }, [])
 
-  // Re-slice when photo or size changes
   useEffect(() => {
     if (photoDataUrl) {
       sliceImage(photoDataUrl, size).then(setTileImages)
@@ -196,14 +260,14 @@ const usePhotoMode = (size) => {
     }
   }, [photoDataUrl, size])
 
-  const handlePhotoUpload = useCallback(async (file) => {
+  const handlePhotoUpload = useCallback(async (file: File) => {
     const cropped = await loadAndCropImage(file)
     saveImageToStorage(cropped)
     setPhotoDataUrl(cropped)
     setMode('photo')
   }, [])
 
-  const handleModeChange = useCallback((newMode) => {
+  const handleModeChange = useCallback((newMode: PuzzleMode) => {
     setMode(newMode)
   }, [])
 
@@ -216,11 +280,11 @@ const usePhotoMode = (size) => {
   }
 }
 
-const App = () => {
-  const [gameState, setGameState] = useState('paused')
-  const [moveCount, setMoveCount] = useState(INITIAL_VALUE)
-  const [size, setSize] = useState(DEFAULT_BOARD_SIZE)
-  const [tiles, setTiles] = useState(() => getTiles(gameBoard, DIMENSION_1D))
+const App: React.FC = () => {
+  const [gameState, setGameState] = useState<GameState>('paused')
+  const [moveCount, setMoveCount] = useState<number>(INITIAL_VALUE)
+  const [size, setSize] = useState<number>(DEFAULT_BOARD_SIZE)
+  const [tiles, setTiles] = useState<number[]>(() => (getTiles(gameBoard, DIMENSION_1D) as number[]) || [])
   const { resetTime, startTimer, stopTimer, time } = useGameTimer()
 
   const {

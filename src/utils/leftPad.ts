@@ -1,10 +1,7 @@
 const MIN_LENGTH = 2
 
-const leftPad = (val) => {
-  let strVal = val
-  if (typeof strVal === 'number') {
-    strVal = strVal.toString()
-  }
+const leftPad = (val: number | string): string => {
+  let strVal = `${val}`
 
   if (strVal.length < MIN_LENGTH) {
     strVal = `0${strVal}`

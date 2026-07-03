@@ -1,11 +1,15 @@
-import PropTypes from 'prop-types'
 import React from 'react'
 
 const MIN_BOARD_SIZE = 3
 const MAX_BOARD_SIZE = 10
 
-const BoardSizeSelection = ({ onChangeSize, size }) => {
-  const options = []
+interface BoardSizeSelectionProps {
+  onChangeSize: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  size: number
+}
+
+const BoardSizeSelection: React.FC<BoardSizeSelectionProps> = ({ onChangeSize, size }) => {
+  const options: React.ReactElement[] = []
 
   for (let sizeOption = MIN_BOARD_SIZE; sizeOption < MAX_BOARD_SIZE; sizeOption++) {
     options.push(<option value={sizeOption} key={sizeOption}>{sizeOption}</option>)
@@ -24,11 +28,6 @@ const BoardSizeSelection = ({ onChangeSize, size }) => {
       </select>
     </div>
   )
-}
-
-BoardSizeSelection.propTypes = {
-  onChangeSize: PropTypes.func,
-  size: PropTypes.number
 }
 
 export default BoardSizeSelection

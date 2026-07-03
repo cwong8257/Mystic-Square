@@ -1,24 +1,31 @@
-import PropTypes from 'prop-types'
+import { PuzzleMode } from '../types'
 import React from 'react'
 import classNames from 'classnames'
 
 const EMPTY_TILE_VALUE = 0
 
-const getStyle = (isPhoto, isEmpty, imageUrl) => {
-  if (isPhoto && !isEmpty) {
+const getStyle = (isPhoto: boolean | undefined, isEmpty: boolean, imageUrl?: string): React.CSSProperties | undefined => {
+  if (isPhoto && !isEmpty && imageUrl) {
     return { backgroundImage: `url(${imageUrl})` }
   }
   return undefined
 }
 
-const getContent = (isPhoto, value) => {
+const getContent = (isPhoto: boolean | undefined, value: number): React.ReactNode => {
   if (isPhoto) { return null }
   return value
 }
 
-const Tile = ({ value, onClickTile, imageUrl, mode }) => {
+interface TileProps {
+  value: number
+  onClickTile?: (event: React.MouseEvent<HTMLDivElement>) => void
+  imageUrl?: string
+  mode?: PuzzleMode
+}
+
+const Tile: React.FC<TileProps> = ({ value, onClickTile, imageUrl, mode }) => {
   const isEmpty = value === EMPTY_TILE_VALUE
-  const isPhoto = mode === 'photo' && imageUrl
+  const isPhoto = mode === 'photo' && Boolean(imageUrl)
 
   const tileClass = classNames('board__tile', {
     'board__tile--empty': isEmpty,
@@ -35,13 +42,6 @@ const Tile = ({ value, onClickTile, imageUrl, mode }) => {
       {getContent(isPhoto, value)}
     </div>
   )
-}
-
-Tile.propTypes = {
-  imageUrl: PropTypes.string,
-  mode: PropTypes.string,
-  onClickTile: PropTypes.func,
-  value: PropTypes.number
 }
 
 export default Tile

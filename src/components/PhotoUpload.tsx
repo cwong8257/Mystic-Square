@@ -1,12 +1,13 @@
 import React, { useCallback, useRef } from 'react'
+import { PuzzleMode } from '../types'
 import classNames from 'classnames'
 
 const FIRST_FILE = 0
 
 interface PhotoUploadProps {
-  mode: 'numbers' | 'photo'
+  mode: PuzzleMode
   photoDataUrl: string | null
-  onModeChange: (mode: 'numbers' | 'photo') => void
+  onModeChange: (mode: PuzzleMode) => void
   onPhotoUpload: (file: File) => void
 }
 
@@ -18,7 +19,7 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleToggle = useCallback((newMode: 'numbers' | 'photo') => {
+  const handleToggle = useCallback((newMode: PuzzleMode) => {
     onModeChange(newMode)
   }, [onModeChange])
 
