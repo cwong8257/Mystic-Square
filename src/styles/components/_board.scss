@@ -63,8 +63,10 @@
       padding-bottom: 100%;
     }
 
-    &:hover {
-      background: color.adjust($color-grey-light-1, $lightness: -5%);
+    @media (hover: hover) {
+      &:hover {
+        background-color: color.adjust($color-grey-light-1, $lightness: -5%);
+      }
     }
 
     &--empty {

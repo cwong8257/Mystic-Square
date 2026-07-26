@@ -28,8 +28,10 @@
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
 
-    &:hover {
-      background-color: color.adjust($color-primary, $lightness: 15%);
+    @media (hover: hover) {
+      &:hover {
+        background-color: color.adjust($color-primary, $lightness: 15%);
+      }
     }
 
     &--active {
@@ -37,8 +39,10 @@
       color: $color-grey-light-1;
       cursor: default;
 
-      &:hover {
-        background-color: $color-primary;
+      @media (hover: hover) {
+        &:hover {
+          background-color: $color-primary;
+        }
       }
     }
   }
@@ -61,9 +65,11 @@
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
 
-    &:hover {
-      background-color: $color-primary;
-      color: $color-grey-light-1;
+    @media (hover: hover) {
+      &:hover {
+        background-color: $color-primary;
+        color: $color-grey-light-1;
+      }
     }
   }
 

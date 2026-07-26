@@ -39,13 +39,15 @@
         outline: none;
       }
 
-      &:hover {
-        transform: translateY(-0.1rem);
+      @media (hover: hover) {
+        &:hover {
+          transform: translateY(-0.1rem);
+          box-shadow: 0 0.3em 1em rgb(0 0 0 / 0.2);
+        }
       }
 
       &:active,
-      &:focus,
-      &:hover {
+      &:focus {
         box-shadow: 0 0.3em 1em rgb(0 0 0 / 0.2);
       }
     }
